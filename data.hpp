@@ -64,6 +64,7 @@ struct game_state {
     int consecutiveDoNothingCount;
     my_player myPlayer;
     vector<opponent> opponents;
+    vector<vector<cell>> map;
 };
 
 #endif
