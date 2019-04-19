@@ -26,9 +26,41 @@ TEST(read_data, reads_expected_player) {
     ASSERT_EQ(first_worm.id, 1);
     ASSERT_EQ(first_worm.health, 100);
 
-    ASSERT_EQ(first_worm.mapPosition, my_worm({ 24, 29 }));
-    ASSERT_EQ(first_worm.weapon, weapon({ 1, 3 }));    
+    map_position& worm_pos = first_worm.position;
+    ASSERT_EQ(worm_pos.x, 24);
+    ASSERT_EQ(worm_pos.y, 29);
+        
+    weapon& wpn = first_worm.weapon;
+    ASSERT_EQ(wpn.damage, 1);
+    ASSERT_EQ(wpn.range, 3);
+
+    ASSERT_EQ(first_worm.diggingRange, 1);
+    ASSERT_EQ(first_worm.movementRange, 1);
+
+    vector<opponent>& opponents = s.opponents;
+    ASSERT_EQ(opponents.size(), 1);
+
+    opponent& my_op = opponents[0];
+    ASSERT_EQ(my_op.id, 2);
+    ASSERT_EQ(my_op.score, 91);
+
+    vector<worm>& op_worms = my_op.worms;
+    ASSERT_EQ(op_worms.size(), 2);
     
+    worm& op_first_worm = op_worms[0];
+    ASSERT_EQ(op_first_worm.id, 10);
+    ASSERT_EQ(op_first_worm.health, 82);
+
+    map_position op_worm_pos = op_first_worm.position;
+    ASSERT_EQ(op_worm_pos.x, 31);
+    ASSERT_EQ(op_worm_pos.y, 16);
+    
+    ASSERT_EQ(op_first_worm.diggingRange, 4);
+    ASSERT_EQ(op_first_worm.movementRange, 2);
 
 }
 
+int main(int argc, char** argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}
