@@ -20,7 +20,7 @@ TEST(read_data, reads_expected_player) {
     ASSERT_EQ(me.health, 300);
 
     vector<my_worm>& worms = me.worms;
-    ASSERT_EQ(worms.size(), 2);
+    ASSERT_EQ(worms.size(), 2ULL);
     
     my_worm& first_worm = worms[0];
     ASSERT_EQ(first_worm.id, 1);
@@ -38,14 +38,14 @@ TEST(read_data, reads_expected_player) {
     ASSERT_EQ(first_worm.movementRange, 1);
 
     vector<opponent>& opponents = s.opponents;
-    ASSERT_EQ(opponents.size(), 1);
+    ASSERT_EQ(opponents.size(), 1ULL);
 
     opponent& my_op = opponents[0];
     ASSERT_EQ(my_op.id, 2);
     ASSERT_EQ(my_op.score, 91);
 
     vector<worm>& op_worms = my_op.worms;
-    ASSERT_EQ(op_worms.size(), 2);
+    ASSERT_EQ(op_worms.size(), 2ULL);
     
     worm& op_first_worm = op_worms[0];
     ASSERT_EQ(op_first_worm.id, 10);
