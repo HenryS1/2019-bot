@@ -42,17 +42,17 @@
   "opponents": [
     {
       "id": 2,
-      "score": 100,
+      "score": 91,
       "worms": [
         {
-          "id": 1,
-          "health": 100,
+          "id": 10,
+          "health": 82,
           "position": {
             "x": 31,
             "y": 16
           },
-          "diggingRange": 1,
-          "movementRange": 1
+          "diggingRange": 4,
+          "movementRange": 2
         },
         {
           "id": 2,
