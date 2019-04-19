@@ -11,6 +11,12 @@ struct weapon {
     int range;
 };
 
+struct cell {
+    int x;
+    int y;
+    string type;
+};
+
 struct map_position {
     int x;
     int y;
