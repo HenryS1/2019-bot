@@ -39,7 +39,7 @@ struct opponent {
 struct my_worm {
     int id;
     int health;
-    map_position mapPosition;
+    map_position position;
     int diggingRange;
     int movementRange;
     weapon weapon;
