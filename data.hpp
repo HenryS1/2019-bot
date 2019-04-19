@@ -1,3 +1,6 @@
+#ifndef _DATA_H_
+#define _DATA_H_
+
 #include "json.hpp"
 #include <vector>
 
@@ -56,3 +59,5 @@ struct game_state {
     my_player myPlayer;
     std::vector<opponent> opponents;
 };
+
+#endif
