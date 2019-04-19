@@ -105,6 +105,7 @@ void to_json(json& j, const game_state& it) {
     j["consecutiveDoNothingCount"] = it.consecutiveDoNothingCount;
     j["myPlayer"] = it.myPlayer;
     j["opponents"] = it.opponents;
+    j["map"] = it.map;
 }
 
 void from_json(const json& j, game_state& it) {
@@ -114,6 +115,7 @@ void from_json(const json& j, game_state& it) {
     j.at("consecutiveDoNothingCount").get_to(it.consecutiveDoNothingCount);
     j.at("myPlayer").get_to(it.myPlayer);
     j.at("opponents").get_to(it.opponents);
+    j.at("map").get_to(it.map);
 }
 
 game_state read_data::read_state(string filepath) {
