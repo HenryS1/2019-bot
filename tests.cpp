@@ -58,6 +58,27 @@ TEST(read_data, reads_expected_player) {
     ASSERT_EQ(op_first_worm.diggingRange, 4);
     ASSERT_EQ(op_first_worm.movementRange, 2);
 
+    vector<vector<cell>>& map = s.map;
+    ASSERT_EQ(map.size(), 1ULL);
+
+    vector<cell>& row_one = map[0];
+    ASSERT_EQ(row_one.size(), 3ULL);
+    
+    cell& first_cell = row_one[0];
+    ASSERT_EQ(first_cell.x, 10);
+    ASSERT_EQ(first_cell.y, 19);
+    ASSERT_EQ(first_cell.type, "DEEP_SPACE");
+
+    cell& second_cell = row_one[1];
+    ASSERT_EQ(second_cell.x, 23);
+    ASSERT_EQ(second_cell.y, 7);
+    ASSERT_EQ(second_cell.type, "AIR");
+
+    cell& third_cell = row_one[2];
+    ASSERT_EQ(third_cell.x, 15);
+    ASSERT_EQ(third_cell.y, 21);
+    ASSERT_EQ(third_cell.type, "DIRT");
+
 }
 
 int main(int argc, char** argv) {
