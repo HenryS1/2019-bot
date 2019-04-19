@@ -8,7 +8,7 @@ TEST(read_data, reads_expected_player) {
     
     read_data reader;
 
-    game_state s = reader.read_state("test_data/test-state.json");
+    game_state s = reader.read_state("test-data/test-state.json");
 
     ASSERT_EQ(s.currentRound, 50);
     ASSERT_EQ(s.maxRounds, 200);
