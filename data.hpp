@@ -48,7 +48,7 @@ struct my_player {
     int id;
     int score;
     int health;
-    std::vector<my_worm> worms;
+    vector<my_worm> worms;
 };
 
 struct game_state {
@@ -57,7 +57,7 @@ struct game_state {
     int currentWormId;
     int consecutiveDoNothingCount;
     my_player myPlayer;
-    std::vector<opponent> opponents;
+    vector<opponent> opponents;
 };
 
 #endif
