@@ -34,8 +34,7 @@ struct game_worm {
 
     game_worm() {}
 
-    game_worm(uint8_t x, uint8_t y,
-              uint16_t health) : x(x), y(y), health(health) {} 
+    game_worm(uint8_t x, uint8_t y, uint16_t health) : x(x), y(y), health(health) {} 
 
     uint8_t x;
     uint8_t y;
