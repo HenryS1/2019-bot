@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "read_data.hpp"
+#include "board.hpp"
 
 using namespace std;
 
@@ -78,6 +79,67 @@ TEST(read_data, reads_expected_player) {
     ASSERT_EQ(third_cell.x, 15);
     ASSERT_EQ(third_cell.y, 21);
     ASSERT_EQ(third_cell.type, "DIRT");
+
+}
+
+TEST(layer, is_correctly_constructed_from_map) {
+    vector<vector<cell>> map = {{ {0, 1, "AIR"}, {1, 0, "DIRT" }}, 
+                                {{ 0, 0, "DEEP_SPACE" }, { 1, 1, "AIR" }}};
+
+    layer<2> air(map, "AIR");
+    
+    ASSERT_EQ(air.rows[0], 0);
+    ASSERT_EQ(air.rows[1], 3);
+
+    layer<2> dirt(map, "DIRT");
+
+    ASSERT_EQ(dirt.rows[0], 2);
+    ASSERT_EQ(dirt.rows[1], 0);
+
+    layer<2> deep_space(map, "DEEP_SPACE");
+
+    ASSERT_EQ(deep_space.rows[0], 1);
+    ASSERT_EQ(deep_space.rows[1], 0);
+
+}
+
+TEST(board, is_correctly_constructed_from_map) {
+
+    vector<vector<cell>> map = {{ {0, 1, "AIR"}, {1, 0, "DIRT" }}, 
+                                {{ 0, 0, "DEEP_SPACE" }, { 1, 1, "AIR" }}};
+
+
+    vector<my_worm> mine = { { 0, 56, { 0, 1 }, 3, 5, { 9, 13 } }};
+
+    vector<worm> yours = { { 3, 79, { 1, 1 }, 12, 6 } };
+
+    board<2> b(map, mine, yours);
+    
+    ASSERT_EQ(b.damage, 9);
+    ASSERT_EQ(b.range, 13);
+    ASSERT_EQ(b.digging_range, 3);
+
+    layer<2>& air = b.air;
+    ASSERT_EQ(air.rows[0], 0);
+    ASSERT_EQ(air.rows[1], 3);
+
+    layer<2>& dirt = b.dirt;
+    ASSERT_EQ(dirt.rows[0], 2);
+    ASSERT_EQ(dirt.rows[1], 0);
+
+    layer<2>& deep_space = b.deep_space;
+    ASSERT_EQ(deep_space.rows[0], 1);
+    ASSERT_EQ(deep_space.rows[1], 0);
+
+    game_worm mw = b.my_worms[0];
+    ASSERT_EQ(mw.x, 0);
+    ASSERT_EQ(mw.y, 1);
+    ASSERT_EQ(mw.health, 56);
+
+    game_worm yw = b.opponent_worms[0];
+    ASSERT_EQ(yw.x, 1);
+    ASSERT_EQ(yw.y, 1);
+    ASSERT_EQ(yw.health, 79);
 
 }
 
