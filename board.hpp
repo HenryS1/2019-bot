@@ -42,8 +42,9 @@ struct game_worm {
 
 };
 
+template<uint8_t WIDTH>
 struct board {
-
+    
     explicit board(const vector<vector<cell>>& map, 
                    const vector<my_worm>& mine,
                    const vector<worm>& yours) : 
@@ -73,9 +74,9 @@ struct board {
     uint8_t damage;
     uint8_t range;
     uint8_t digging_range;
-    layer deep_space;
-    layer air;
-    layer dirt;
+    layer<WIDTH> deep_space;
+    layer<WIDTH> air;
+    layer<WIDTH> dirt;
     game_worm my_worms[3] = {};
     game_worm opponent_worms[3] = {};
 
