@@ -3,8 +3,10 @@
 
 #include "json.hpp"
 #include <vector>
+#include <stdint.h>
 
 using namespace std;
+
 
 struct weapon {
     int damage;
