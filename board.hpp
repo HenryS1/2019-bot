@@ -123,6 +123,14 @@ struct board {
 
         return result;
     }
+
+    bool friendly_worm_is_at_position(uint8_t x, uint8_t y) {
+        for (auto it = my_worms; it < my_worms + 3; it++) {
+            game_worm w = *it;
+            if (w.x == x && w.y == y) return true;
+        }
+        return false;
+    }
     
     bool might_shoot_north(game_worm w, game_worm in_range_enemy) {
         if (abs(w.x - in_range_enemy.x) > 1) return false;
