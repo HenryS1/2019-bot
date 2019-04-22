@@ -1,10 +1,12 @@
 #ifndef _BOARD_H_
 #define _BOARD_H_
 
+#include "data.hpp"
 #include <stdint.h>
 #include <vector>
-#include "data.hpp"
 #include <assert.h>
+#include <iostream>
+#include <math.h>
 
 using namespace std;
 
@@ -36,10 +38,23 @@ struct game_worm {
 
     game_worm(uint8_t x, uint8_t y, uint16_t health) : x(x), y(y), health(health) {} 
 
+    bool is_alive() { return health > 0; }
+
     uint8_t x;
     uint8_t y;
     uint16_t health;
 
+};
+
+enum direction : uint8_t {
+    N = 1,
+    NE = 2,
+    E = 4,
+    SE = 8,
+    S = 16,
+    SW = 32,
+    W = 64,
+    NW = 128
 };
 
 template<uint8_t WIDTH>
@@ -69,6 +84,170 @@ struct board {
             opponent_worms[index++] = game_worm(w.position.x, w.position.y, w.health);
         }
 
+    }
+
+    uint8_t dig_candidates(game_worm w) {
+        uint8_t result = 0;
+        uint64_t up_one_row = w.y > 0 ? dirt.rows[w.y - 1] : 0;
+        result |= (1ULL << w.x) & up_one_row;
+        result |= w.x > 0 ? (1ULL << (w.x - 1)) & up_one_row : 0;
+        result |= w.x < WIDTH ? (1ULL << (w.x + 1)) & up_one_row : 0;
+        
+        uint64_t row = dirt.rows[w.y];
+        result |= w.x > 0 ? (1ULL << (w.x - 1)) & row : 0;
+        result |= w.x < WIDTH ? (1ULL << (w.x + 1)) & row : 0;
+
+        uint64_t down_one_row = w.y < WIDTH ? dirt.rows[w.y + 1] : 0;
+        result |= (1ULL << w.x) & down_one_row;
+        result |= w.x > 0 ? (1ULL << (w.x - 1)) & down_one_row : 0;
+        result |= w.x < WIDTH ? (1ULL << (w.x + 1)) & down_one_row : 0;
+
+        return result;
+    }
+
+    uint8_t move_candidates(game_worm w) {
+        uint8_t result = 0;
+        uint64_t up_one_row = w.y > 0 ? air.rows[w.y - 1] : 0;
+        result |= (1ULL << w.x) & up_one_row;
+        result |= w.x > 0 ? (1ULL << (w.x - 1)) & up_one_row : 0;
+        result |= w.x < WIDTH ? (1ULL << (w.x + 1)) & up_one_row : 0;
+        
+        uint64_t row = air.rows[w.y];
+        result |= w.x > 0 ? (1ULL << (w.x - 1)) & row : 0;
+        result |= w.x < WIDTH ? (1ULL << (w.x + 1)) & row : 0;
+
+        uint64_t down_one_row = w.y < WIDTH ? air.rows[w.y + 1] : 0;
+        result |= (1ULL << w.x) & down_one_row;
+        result |= w.x > 0 ? (1ULL << (w.x - 1)) & down_one_row : 0;
+        result |= w.x < WIDTH ? (1ULL << (w.x + 1)) & down_one_row : 0;
+
+        return result;
+    }
+    
+    bool might_shoot_north(game_worm w, game_worm in_range_enemy) {
+        if (abs(w.x - in_range_enemy.x) > 1) return false;
+        uint8_t distance = abs(w.y - in_range_enemy.y);
+        uint64_t row_mask = 1ULL << w.x;
+        for (uint8_t i = 1; i < distance; i++) {
+            if (dirt.rows[w.y - i] & row_mask) return false;
+        }
+        return true;
+    }
+
+    bool might_shoot_south(game_worm w, game_worm in_range_enemy) {
+        if (abs(w.x - in_range_enemy.x) > 1) return false;
+        uint8_t distance = abs(w.y - in_range_enemy.y);
+        uint64_t row_mask = 1ULL << w.x;
+        for (uint8_t i = 1; i < distance; i++) {
+            if (dirt.rows[w.y + i] & row_mask) return false;
+        }
+        return true;
+    }
+
+    bool might_shoot_west(game_worm w, game_worm in_range_enemy) {
+        if (abs(w.y - in_range_enemy.y) > 1) return false;
+        uint8_t distance = abs(w.x - in_range_enemy.x);
+        uint64_t current_row = dirt.rows[w.y];
+        for (uint8_t i = 1; i < distance; i++) {
+            if (current_row & (1ULL << (w.x - i))) return false;
+        }
+        return true;
+    }
+
+    bool might_shoot_east(game_worm w, game_worm in_range_enemy) {
+        if (abs(w.y - in_range_enemy.y) > 1) return false;
+        uint8_t distance = abs(w.x - in_range_enemy.x);
+        uint64_t current_row = dirt.rows[w.y];
+        for (uint8_t i = 1; i < distance; i++) {
+            if (current_row & (1ULL << (w.x + i))) return false;
+        }
+        return true;
+    }
+
+    bool might_shoot_ne(game_worm w, game_worm in_range_enemy, double distance) {
+        if (abs(w.y - in_range_enemy.y) > 1) return false;
+        double root_two = sqrt(2);
+        for (uint8_t i = 1; i * root_two < distance; i++) {
+            if (dirt.rows[w.y - i] & (1ULL << (w.x + i))) return false;
+        }
+        return true;
+    }
+
+    bool might_shoot_se(game_worm w, game_worm in_range_enemy, double distance) {
+        if (abs(w.y - in_range_enemy.y) > 1) return false;
+        double root_two = sqrt(2);
+        for (uint8_t i = 1; i * root_two < distance; i++) {
+            if (dirt.rows[w.y + i] & (1ULL << (w.x + i))) return false;
+        }
+        return true;
+    }
+
+    bool might_shoot_nw(game_worm w, game_worm in_range_enemy, double distance) {
+        if (abs(w.y - in_range_enemy.y) > 1) return false;
+        double root_two = sqrt(2);
+        for (uint8_t i = 1; i * root_two < distance; i++) {
+            if (dirt.rows[w.y - i] & (1ULL << (w.x - i))) return false;
+        }
+        return true;
+    }
+
+    bool might_shoot_sw(game_worm w, game_worm in_range_enemy, double distance) {
+        if (abs(w.y - in_range_enemy.y) > 1) return false;
+        double root_two = sqrt(2);
+        for (uint8_t i = 1; i * root_two < distance; i++) {
+            if (dirt.rows[w.y + i] & (1ULL << (w.x - i))) return false;
+        }
+        return true;
+    }
+
+    double euclidean_distance(game_worm one, game_worm other) {
+        if (one.x == other.x) return abs(one.x - other.x);
+        if (one.y == other.y) return abs(one.y - other.y);
+        uint8_t delx = one.x - other.x;
+        uint8_t dely = one.y - other.y;
+        return sqrt(delx * delx + dely * dely);
+    }
+
+    uint8_t shoot_candidates(game_worm w) {
+        uint8_t result = 0;
+        for (auto it = opponent_worms; it < opponent_worms + 3; it++) {
+            game_worm other = *it;
+            double distance = euclidean_distance(w, other);
+            if (other.is_alive() && distance <= range) {
+                if (might_shoot_north(w, other)) {
+                    result |= N;
+                    continue;
+                }
+                if (might_shoot_ne(w, other, distance)) { 
+                    result |= NE;
+                    continue;
+                }
+                if (might_shoot_east(w, other, distance)) {
+                    result |= E;
+                    continue;
+                }
+                if (might_shoot_se(w, other, distance)) {
+                    result |= SE;
+                    continue;
+                }
+                if (might_shoot_south(w, other)) {
+                    result |= S;
+                    continue;
+                }
+                if (might_shoot_sw(w, other, distance)) {
+                    result |= SW;
+                    continue;
+                }
+                if (might_shoot_west(w, other)) {
+                    result |= W;
+                    continue;
+                }
+                if (might_shoot_nw(w, other, distance)) {
+                    result |= NW;
+                }
+            }
+        }
+        return result;
     }
 
     uint8_t damage;
