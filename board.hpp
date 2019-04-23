@@ -122,22 +122,31 @@ struct board {
 
     uint8_t move_candidates(game_worm w) {
         uint8_t result = 0;
-        uint64_t up_one_row = w.y > 0 ? air.rows[w.y - 1] : 0;
-        result |= !friendly_worm_will_be_at_position(w.x, w.y - 1) 
-            ? ((1ULL << w.x) & up_one_row) : 0;
-        result |= w.x > 0 && !friendly_worm_will_be_at_position(w.x - 1, w.y - 1) 
-            ? (1ULL << (w.x - 1)) & up_one_row : 0;
-        result |= w.x < WIDTH ? (1ULL << (w.x + 1)) & up_one_row : 0;
-        
+        if (w.y > 0) {
+            uint64_t up_one_row = air.rows[w.y - 1];
+            result |= !friendly_worm_will_be_at_position(w.x, w.y - 1) 
+                ? ((1ULL << w.x) & up_one_row) : 0;
+            result |= w.x > 0 && !friendly_worm_will_be_at_position(w.x - 1, w.y - 1) 
+                ? (1ULL << (w.x - 1)) & up_one_row : 0;
+            result |= w.x < WIDTH && !friendly_worm_will_be_at_position(w.x + 1, w.y - 1) 
+                            ? (1ULL << (w.x + 1)) & up_one_row : 0;
+        }
+
         uint64_t row = air.rows[w.y];
-        result |= w.x > 0 ? (1ULL << (w.x - 1)) & row : 0;
-        result |= w.x < WIDTH ? (1ULL << (w.x + 1)) & row : 0;
+        result |= w.x > 0 && !friendly_worm_will_be_at_position(w.x - 1, w.y)
+                            ? (1ULL << (w.x - 1)) & row : 0;
+        result |= w.x < WIDTH && !friendly_worm_will_be_at_position(w.x + 1, w.y) 
+                        ? (1ULL << (w.x + 1)) & row : 0;
 
-        uint64_t down_one_row = w.y < WIDTH ? air.rows[w.y + 1] : 0;
-        result |= (1ULL << w.x) & down_one_row;
-        result |= w.x > 0 ? (1ULL << (w.x - 1)) & down_one_row : 0;
-        result |= w.x < WIDTH ? (1ULL << (w.x + 1)) & down_one_row : 0;
-
+        if (w.y < WIDTH) {
+            uint64_t down_one_row = air.rows[w.y + 1];
+            result |= !friendly_worm_will_be_at_position(w.x, w.y + 1)
+                ? ((1ULL << w.x) & down_one_row) : 0;
+            result |= w.x > 0 && !friendly_worm_will_be_at_position(w.x - 1, w.y) 
+                ? (1ULL << (w.x - 1)) & down_one_row : 0;
+            result |= w.x < WIDTH && !friendly_worm_will_be_at_position(w.x + 1, w.y) 
+                            ? (1ULL << (w.x + 1)) & down_one_row : 0;
+        }
         return result;
     }
 
