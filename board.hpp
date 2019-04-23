@@ -139,9 +139,11 @@ struct board {
         return result;
     }
 
-    bool friendly_worm_is_at_position(uint8_t x, uint8_t y) {
+    bool friendly_worm_will_be_at_position(uint8_t x, uint8_t y) {
         for (auto it = my_worms; it < my_worms + 3; it++) {
             game_worm w = *it;
+            if (w.action.a == MOVE && w.x + w.action.del_x == x && w.y + w.action.del_y == y) 
+                return true;
             if (w.x == x && w.y == y) return true;
         }
         return false;
@@ -154,7 +156,7 @@ struct board {
         for (uint8_t i = 1; i < distance; i++) {
             uint8_t y = w.y - i;
             if (dirt.rows[y] & row_mask) return false;
-            if (friendly_worm_is_at_position(w.x, y)) return false;
+            if (friendly_worm_will_be_at_position(w.x, y)) return false;
         }
         return true;
     }
@@ -166,7 +168,7 @@ struct board {
         for (uint8_t i = 1; i < distance; i++) {
             uint8_t y = w.y + i;
             if (dirt.rows[y] & row_mask) return false;
-            if (friendly_worm_is_at_position(w.x, y)) return false;
+            if (friendly_worm_will_be_at_position(w.x, y)) return false;
         }
         return true;
     }
@@ -178,7 +180,7 @@ struct board {
         for (uint8_t i = 1; i < distance; i++) {
             uint8_t x = w.x - i;
             if (current_row & (1ULL << x)) return false;
-            if (friendly_worm_is_at_position(x, w.y)) return false;
+            if (friendly_worm_will_be_at_position(x, w.y)) return false;
         }
         return true;
     }
@@ -190,7 +192,7 @@ struct board {
         for (uint8_t i = 1; i < distance; i++) {
             uint8_t x = w.x + i;
             if (current_row & (1ULL << x)) return false;
-            if (friendly_worm_is_at_position(x, w.y)) return false;
+            if (friendly_worm_will_be_at_position(x, w.y)) return false;
         }
         return true;
     }
@@ -202,7 +204,7 @@ struct board {
             uint8_t x = w.x + i;
             uint8_t y = w.y - i;
             if (dirt.rows[y] & (1ULL << x)) return false;
-            if (friendly_worm_is_at_position(x, y)) return false;
+            if (friendly_worm_will_be_at_position(x, y)) return false;
         }
         return true;
     }
@@ -214,7 +216,7 @@ struct board {
             uint8_t x = w.x + i;
             uint8_t y = w.y + i;
             if (dirt.rows[y] & (1ULL << x)) return false;
-            if (friendly_worm_is_at_position(x, y)) return false;
+            if (friendly_worm_will_be_at_position(x, y)) return false;
         }
         return true;
     }
@@ -226,7 +228,7 @@ struct board {
             uint8_t x = w.x - i;
             uint8_t y = w.y - i;
             if (dirt.rows[y] & (1ULL << x)) return false;
-            if (friendly_worm_is_at_position(x, y)) return false;
+            if (friendly_worm_will_be_at_position(x, y)) return false;
         }
         return true;
     }
@@ -238,7 +240,7 @@ struct board {
             uint8_t x = w.x - i;
             uint8_t y = w.y + i;
             if (dirt.rows[y] & (1ULL << x)) return false;
-            if (friendly_worm_is_at_position(x, y)) return false;
+            if (friendly_worm_will_be_at_position(x, y)) return false;
         }
         return true;
     }
@@ -301,6 +303,7 @@ struct board {
     layer<WIDTH> dirt;
     game_worm my_worms[3] = {};
     game_worm opponent_worms[3] = {};
+    selected_action allocated_moves[3] = {};
 
 };
 
