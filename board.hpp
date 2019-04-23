@@ -32,6 +32,31 @@ struct layer {
 
 };
 
+enum direction : uint8_t {
+    NONE = 0,
+    N = 1,
+    NE = 2,
+    E = 4,
+    SE = 8,
+    S = 16,
+    SW = 32,
+    W = 64,
+    NW = 128
+};
+
+enum action : uint8_t {
+    NOTHING = 0,
+    MOVE = 1,
+    DIG = 2,
+    SHOOT = 4
+};
+
+struct selected_action {
+    uint8_t del_x = 0;
+    uint8_t del_y = 0;
+    action a = NOTHING;
+};
+
 struct game_worm {
 
     game_worm() {}
@@ -43,18 +68,8 @@ struct game_worm {
     uint8_t x;
     uint8_t y;
     uint16_t health;
+    selected_action action;
 
-};
-
-enum direction : uint8_t {
-    N = 1,
-    NE = 2,
-    E = 4,
-    SE = 8,
-    S = 16,
-    SW = 32,
-    W = 64,
-    NW = 128
 };
 
 template<uint8_t WIDTH>
