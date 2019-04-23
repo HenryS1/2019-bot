@@ -144,6 +144,7 @@ struct board {
     bool friendly_worm_will_be_at_position(uint8_t x, uint8_t y) {
         for (auto it = my_worms; it < my_worms + 3; it++) {
             game_worm w = *it;
+            if (!w.is_alive()) continue;
             if (w.action.a == MOVE && w.x + w.action.del_x == x && w.y + w.action.del_y == y) 
                 return true;
             if (w.x == x && w.y == y) return true;
