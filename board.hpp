@@ -114,19 +114,23 @@ struct board {
 
     uint8_t dig_candidates(game_worm w) {
         uint8_t result = 0;
-        uint64_t up_one_row = w.y > 0 ? dirt.rows[w.y - 1] : 0;
-        result |= (1ULL << w.x) & up_one_row;
-        result |= w.x > 0 ? (1ULL << (w.x - 1)) & up_one_row : 0;
-        result |= w.x < WIDTH ? (1ULL << (w.x + 1)) & up_one_row : 0;
-        
-        uint64_t row = dirt.rows[w.y];
-        result |= w.x > 0 ? (1ULL << (w.x - 1)) & row : 0;
-        result |= w.x < WIDTH ? (1ULL << (w.x + 1)) & row : 0;
+        if (w.y > 0) {
+            uint64_t up_one_row = dirt.rows[w.y - 1];
+            result |= ((1ULL << w.x) & up_one_row) ? N : 0;
+            result |= w.x > 0 && ((1ULL << (w.x - 1)) & up_one_row) ? NW : 0;
+            result |= w.x < WIDTH && ((1ULL << (w.x + 1)) & up_one_row) ? NE : 0;
+        }
 
-        uint64_t down_one_row = w.y < WIDTH ? dirt.rows[w.y + 1] : 0;
-        result |= (1ULL << w.x) & down_one_row;
-        result |= w.x > 0 ? (1ULL << (w.x - 1)) & down_one_row : 0;
-        result |= w.x < WIDTH ? (1ULL << (w.x + 1)) & down_one_row : 0;
+        uint64_t row = dirt.rows[w.y];
+        result |= w.x > 0 && ((1ULL << (w.x - 1)) & row) ? W : 0;
+        result |= w.x < WIDTH && ((1ULL << (w.x + 1)) & row) ? E : 0;
+
+        if (w.y < WIDTH) {
+            uint64_t down_one_row = dirt.rows[w.y + 1];
+            result |= ((1ULL << w.x) & down_one_row) ? S : 0;
+            result |= w.x > 0 && ((1ULL << (w.x - 1)) & down_one_row) ? SW : 0;
+            result |= w.x < WIDTH && ((1ULL << (w.x + 1)) & down_one_row) ? SE : 0;
+        }
 
         return result;
     }
