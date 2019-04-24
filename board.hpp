@@ -13,7 +13,7 @@ using namespace std;
 template <uint8_t WIDTH>
 struct layer {
 
-    explicit layer(const vector<vector<cell>>& map, const string& type) {
+    layer(const vector<vector<cell>>& map, const string& type) {
         assert(map.size() == WIDTH);
         for (auto row : map) {
             assert(row.size() == WIDTH);
@@ -26,6 +26,10 @@ struct layer {
                 current_position_mask <<= 1;
             }
         }
+    }
+
+    explicit layer(uint64_t* src_rows) {
+        memcpy(rows, src_rows, WIDTH * sizeof(uint64_t));
     }
 
     uint64_t rows[WIDTH] = {0};
