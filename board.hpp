@@ -79,9 +79,16 @@ struct game_worm {
 template<uint8_t WIDTH>
 struct board {
     
-    explicit board(const vector<vector<cell>>& map, 
-                   const vector<my_worm>& mine,
-                   const vector<worm>& yours) : 
+    board(const layer<WIDTH>& dirt,
+          const layer<WIDTH>& air,
+          const layer<WIDTH>& deep_space,
+          uint8_t damage, uint8_t range, 
+          uint8_t digging_range) : dirt(dirt), air(air), deep_space(deep_space),
+                                   damage(damage), range(range), digging_range(digging_range) {}
+
+    board(const vector<vector<cell>>& map, 
+          const vector<my_worm>& mine,
+          const vector<worm>& yours) : 
         deep_space(map, "DEEP_SPACE"),
         air(map, "AIR"),
         dirt(map, "DIRT") {
