@@ -167,7 +167,7 @@ struct board {
             if (!w.is_alive()) continue;
             if (w.action.a == MOVE && w.x + w.action.del_x == x && w.y + w.action.del_y == y) 
                 return true;
-            if (w.x == x && w.y == y) return true;
+            else if (w.x == x && w.y == y) return true;
         }
         return false;
     }
