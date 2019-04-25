@@ -164,7 +164,7 @@ TEST(board, when_all_squares_are_available_all_directions_are_move_candidates) {
 
 TEST(board, when_all_surrounding_squares_are_dirt_all_directions_are_dig_candidates) {
 
-    uint64_t air_rows[9] = {0};
+    uint64_t air_rows[9] = {0, 0, 4, 0, 0, 0, 0, 0, 0};
     uint64_t dirt_rows[9] = { 511, 511, 507, 511, 511, 511, 511, 511, 511 };
     uint64_t deep_space_rows[9] = {0};
 
