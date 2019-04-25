@@ -294,7 +294,7 @@ struct board {
                     result |= NE;
                     continue;
                 }
-                if (might_shoot_east(w, other, distance)) {
+                if (might_shoot_east(w, other)) {
                     result |= E;
                     continue;
                 }
