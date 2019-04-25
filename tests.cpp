@@ -182,6 +182,23 @@ TEST(board, when_all_surrounding_squares_are_dirt_all_directions_are_dig_candida
 
 }
 
+TEST(board, when_all_surrounding_squares_are_deep_space_no_directions_are_move_candidates) {
+    uint64_t air_rows[9] = {0, 0, 4, 0, 0, 0, 0, 0, 0};
+    uint64_t dirt_rows[9] = {0};
+    uint64_t deep_space_rows[9] = { 511, 511, 507, 511, 511, 511, 511, 511, 511 };
+
+    layer<9> air(air_rows);
+    layer<9> dirt(dirt_rows);
+    layer<9> deep_space(deep_space_rows);
+
+    uint8_t damage = 4, range = 6, digging_range = 1;
+    
+    board<9> b(dirt, air, deep_space, damage, range, digging_range);
+
+    b.my_worms[0] = game_worm(2, 2, 5);
+    ASSERT_EQ((int)b.move_candidates(b.my_worms[0]), 0);
+}
+
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
