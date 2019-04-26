@@ -201,7 +201,7 @@ struct board {
     }
 
     bool might_shoot_west(game_worm w, game_worm in_range_enemy) {
-        if (abs(w.y - in_range_enemy.y) > 1) return false;
+        if (abs(w.y - in_range_enemy.y) > 1 || w.x < in_range_enemy.x) return false;
         uint8_t distance = abs(w.x - in_range_enemy.x);
         uint64_t current_row = dirt.rows[w.y];
         for (uint8_t i = 1; i < distance; i++) {
