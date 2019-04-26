@@ -225,7 +225,8 @@ struct board {
     }
 
     bool might_shoot_ne(game_worm w, game_worm in_range_enemy, double distance) {
-        if (abs(w.y - in_range_enemy.y) > 1) return false;
+        if (w.x - w.y != in_range_enemy.x - in_range_enemy.y ||
+            w.x > in_range_enemy.x) return false;
         double root_two = sqrt(2);
         for (uint8_t i = 1; i * root_two < distance; i++) {
             uint8_t x = w.x + i;
