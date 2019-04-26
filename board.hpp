@@ -279,8 +279,8 @@ struct board {
     double euclidean_distance(game_worm one, game_worm other) {
         if (one.x == other.x) return abs(one.x - other.x);
         if (one.y == other.y) return abs(one.y - other.y);
-        uint8_t delx = one.x - other.x;
-        uint8_t dely = one.y - other.y;
+        int16_t delx = one.x - other.x;
+        int16_t dely = one.y - other.y;
         return sqrt(delx * delx + dely * dely);
     }
 
