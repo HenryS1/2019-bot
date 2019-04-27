@@ -292,7 +292,7 @@ TEST(board, shoots_when_target_might_move_into_firing_line) {
     layer<9> dirt(dirt_rows);
     layer<9> deep_space(deep_space_rows);
 
-    uint8_t damage = 4, range = 2, digging_range = 1;
+    uint8_t damage = 4, range = 3, digging_range = 1;
 
     board<9> b(dirt, air, deep_space, damage, range, digging_range);
 
