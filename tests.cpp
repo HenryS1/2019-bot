@@ -247,12 +247,39 @@ TEST(board, cant_shoot_a_worm_thats_out_of_range) {
 
     board<9> b(dirt, air, deep_space, damage, range, digging_range);
 
-    b.my_worms[0] = game_worm(2, 4, 5);
+    b.my_worms[0] = game_worm(4, 4, 5);
 
-    b.opponent_worms[0] = game_worm(2, 1, 5);
+    b.opponent_worms[0] = game_worm(4, 1, 5);
 
     ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), NONE);
 
+    b.opponent_worms[0] = game_worm(4, 7, 5);
+
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), NONE);
+
+    b.opponent_worms[0] = game_worm(1, 4, 5);
+
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), NONE);
+
+    b.opponent_worms[0] = game_worm(7, 4, 5);
+
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), NONE);
+
+    b.opponent_worms[0] = game_worm(1, 1, 5);
+
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), NONE);
+
+    b.opponent_worms[0] = game_worm(1, 7, 5);
+    
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), NONE);
+
+    b.opponent_worms[0] = game_worm(7, 7, 5);
+
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), NONE);
+
+    b.opponent_worms[0] = game_worm(7, 1, 5);
+
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), NONE);
 }
 
 
