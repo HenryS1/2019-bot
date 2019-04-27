@@ -243,7 +243,7 @@ TEST(board, cant_shoot_a_worm_thats_out_of_range) {
     layer<9> dirt(dirt_rows);
     layer<9> deep_space(deep_space_rows);
 
-    uint8_t damage = 4, range = 2, digging_range = 1;
+    uint8_t damage = 4, range = 1, digging_range = 1;
 
     board<9> b(dirt, air, deep_space, damage, range, digging_range);
 
