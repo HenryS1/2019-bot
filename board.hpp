@@ -228,6 +228,7 @@ struct board {
     bool might_shoot_ne(game_worm w, game_worm in_range_enemy, double distance) {
         if (abs(w.x - in_range_enemy.x - (in_range_enemy.y - w.y)) > 1 ||
             w.x > in_range_enemy.x) return false;
+        distance = min((double)range, distance);
         double root_two = sqrt(2);
         for (uint8_t i = 1; i * root_two < distance; i++) {
             uint8_t x = w.x + i;
@@ -242,6 +243,7 @@ struct board {
         if (abs(w.x - w.y - (in_range_enemy.x - in_range_enemy.y)) > 1 || 
             w.x > in_range_enemy.x) return false;
         double root_two = sqrt(2);
+        distance = min((double)range, distance);
         for (uint8_t i = 1; i * root_two < distance; i++) {
             uint8_t x = w.x + i;
             uint8_t y = w.y + i;
@@ -255,6 +257,7 @@ struct board {
         if (abs(w.x - w.y - (in_range_enemy.x - in_range_enemy.y)) > 1 ||
             w.x < in_range_enemy.x) return false;
         double root_two = sqrt(2);
+        distance = min((double)range, distance);
         for (uint8_t i = 1; i * root_two < distance; i++) {
             uint8_t x = w.x - i;
             uint8_t y = w.y - i;
@@ -268,6 +271,7 @@ struct board {
         if (abs(w.x - in_range_enemy.x - (in_range_enemy.y - w.y)) > 1 ||
             w.x < in_range_enemy.x) return false;
         double root_two = sqrt(2);
+        distance = min((double)range, distance);
         for (uint8_t i = 1; i * root_two < distance; i++) {
             uint8_t x = w.x - i;
             uint8_t y = w.y + i;
