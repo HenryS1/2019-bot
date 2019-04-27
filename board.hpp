@@ -294,7 +294,7 @@ struct board {
         for (auto it = opponent_worms; it < opponent_worms + 3; it++) {
             game_worm other = *it;
             double distance = euclidean_distance(w, other);
-            if (other.is_alive() && distance <= range) {
+            if (other.is_alive() && distance <= range + 1) {
                 if (might_shoot_north(w, other)) {
                     result |= N;
                 }
