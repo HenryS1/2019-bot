@@ -177,7 +177,7 @@ struct board {
     }
     
     bool might_shoot_north(game_worm w, game_worm in_range_enemy) {
-        if (abs(w.x - in_range_enemy.x) > 1 || w.y > in_range_enemy.y) return false;
+        if (abs(w.x - in_range_enemy.x) > 1 || w.y < in_range_enemy.y) return false;
         uint8_t distance = abs(w.y - in_range_enemy.y);
         uint64_t row_mask = 1ULL << w.x;    
         for (uint8_t i = 1; i < distance; i++) {
