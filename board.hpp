@@ -292,31 +292,24 @@ struct board {
             if (other.is_alive() && distance <= range) {
                 if (might_shoot_north(w, other)) {
                     result |= N;
-                    continue;
                 }
                 if (might_shoot_ne(w, other, distance)) { 
                     result |= NE;
-                    continue;
                 }
                 if (might_shoot_east(w, other)) {
                     result |= E;
-                    continue;
                 }
                 if (might_shoot_se(w, other, distance)) {
                     result |= SE;
-                    continue;
                 }
                 if (might_shoot_south(w, other)) {
                     result |= S;
-                    continue;
                 }
                 if (might_shoot_sw(w, other, distance)) {
                     result |= SW;
-                    continue;
                 }
                 if (might_shoot_west(w, other)) {
                     result |= W;
-                    continue;
                 }
                 if (might_shoot_nw(w, other, distance)) {
                     result |= NW;
