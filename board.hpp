@@ -191,17 +191,7 @@ struct board {
     }
 
     bool dirt_cell_might_get_dug_out_by_my_worm(uint8_t x, uint8_t y, game_worm w) {
-        if (w.action.a == DIG) {
-            if (w.y == y) {
-                return (w.x == x - 1 && w.action.del_x == 1) || 
-                    (w.x == x + 1 && w.action.del_x == -1);
-            }
-            if (w.x == x) {
-                return (w.y == y - 1 && w.action.del_y == 1) ||
-                    (w.y == y + 1 && w.action.del_y == -1);
-            }  
-        }
-        return false;
+        return (w.action.a == DIG) && (w.x + w.action.del_x == x) && (w.y + w.action.del_y == y);
     }
     
     bool might_shoot_north(game_worm w, game_worm in_range_enemy) {
