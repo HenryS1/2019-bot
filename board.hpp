@@ -209,7 +209,7 @@ struct board {
         uint64_t row_mask = 1ULL << w.x;    
         for (uint8_t i = 1; i <= distance; i++) {
             uint8_t y = w.y - i;
-            if (dirt.rows[y] & row_mask) return false;
+            if ((dirt.rows[y] & row_mask) && !dirt_might_get_dug_out(w.x, y)) return false;
             if (friendly_worm_will_be_at_position(w.x, y)) return false;
         }
         return true;
@@ -221,7 +221,7 @@ struct board {
         uint64_t row_mask = 1ULL << w.x;
         for (uint8_t i = 1; i <= distance; i++) {
             uint8_t y = w.y + i;
-            if (dirt.rows[y] & row_mask) return false;
+            if ((dirt.rows[y] & row_mask) && !dirt_might_get_dug_out(w.x, y)) return false;
             if (friendly_worm_will_be_at_position(w.x, y)) return false;
         }
         return true;
@@ -233,7 +233,7 @@ struct board {
         uint64_t current_row = dirt.rows[w.y];
         for (uint8_t i = 1; i <= distance; i++) {
             uint8_t x = w.x - i;
-            if (current_row & (1ULL << x)) return false;
+            if ((current_row & (1ULL << x)) && !dirt_might_get_dug_out(x, w.y)) return false;
             if (friendly_worm_will_be_at_position(x, w.y)) return false;
         }
         return true;
@@ -245,7 +245,7 @@ struct board {
         uint64_t current_row = dirt.rows[w.y];
         for (uint8_t i = 1; i <= distance; i++) {
             uint8_t x = w.x + i;
-            if (current_row & (1ULL << x)) return false;
+            if ((current_row & (1ULL << x)) && !dirt_might_get_dug_out(x, w.y)) return false;
             if (friendly_worm_will_be_at_position(x, w.y)) return false;
         }
         return true;
@@ -259,7 +259,7 @@ struct board {
         for (uint8_t i = 1; i * root_two <= distance; i++) {
             uint8_t x = w.x + i;
             uint8_t y = w.y - i;
-            if (dirt.rows[y] & (1ULL << x)) return false;
+            if ((dirt.rows[y] & (1ULL << x)) && !dirt_might_get_dug_out(x, y)) return false;
             if (friendly_worm_will_be_at_position(x, y)) return false;
         }
         return true;
@@ -273,7 +273,7 @@ struct board {
         for (uint8_t i = 1; i * root_two <= distance; i++) {
             uint8_t x = w.x + i;
             uint8_t y = w.y + i;
-            if (dirt.rows[y] & (1ULL << x)) return false;
+            if ((dirt.rows[y] & (1ULL << x)) && !dirt_might_get_dug_out(x, y)) return false;
             if (friendly_worm_will_be_at_position(x, y)) return false;
         }
         return true;
@@ -287,7 +287,7 @@ struct board {
         for (uint8_t i = 1; i * root_two <= distance; i++) {
             uint8_t x = w.x - i;
             uint8_t y = w.y - i;
-            if (dirt.rows[y] & (1ULL << x)) return false;
+            if ((dirt.rows[y] & (1ULL << x)) && !dirt_might_get_dug_out(x, y)) return false;
             if (friendly_worm_will_be_at_position(x, y)) return false;
         }
         return true;
@@ -301,7 +301,7 @@ struct board {
         for (uint8_t i = 1; i * root_two <= distance; i++) {
             uint8_t x = w.x - i;
             uint8_t y = w.y + i;
-            if (dirt.rows[y] & (1ULL << x)) return false;
+            if ((dirt.rows[y] & (1ULL << x)) && !dirt_might_get_dug_out(x, y)) return false;
             if (friendly_worm_will_be_at_position(x, y)) return false;
         }
         return true;
