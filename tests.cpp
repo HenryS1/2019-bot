@@ -441,7 +441,7 @@ TEST(board, should_be_able_to_shoot_if_dirt_might_get_dug_out_by_enemy) {
 
     b.my_worms[0] = game_worm(3, 4, 5);
 
-    b.opponent_worms[0] = game_worm(3, 2, 5);
+    b.opponent_worms[0] = game_worm(3, 1, 5);
 
     b.opponent_worms[1] = game_worm(2, 3, 5);
 
