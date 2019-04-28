@@ -425,6 +425,27 @@ TEST(board, should_not_be_able_to_shoot_when_a_worm_cant_move_into_firing_line) 
 
 }
 
+TEST(board, should_be_able_to_shoot_if_dirt_might_get_dug_out_by_enemy) {
+
+    uint64_t air_rows[9] = {511, 511, 511, 503, 511, 511, 511, 511, 511};
+    uint64_t dirt_rows[9] = {0, 0, 0, 8, 0, 0, 0, 0, 0};
+    uint64_t deep_space_rows[9] = {0};
+
+    layer<9> air(air_rows);
+    layer<9> dirt(dirt_rows);
+    layer<9> deep_space(deep_space_rows);
+
+    uint8_t damage = 4, range = 2, digging_range = 1;
+
+    board<9> b(dirt, air, deep_space, damage, range, digging_range);
+
+    b.my_worms[0] = game_worm(3, 4, 5);
+
+    b.opponent_worms[0] = game_worm(3, 2, 5);
+
+    b.opponent_worms[1] = game_worm(2, 3, 5);
+
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), N | NW | W);
 
 }
 
