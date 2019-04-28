@@ -397,7 +397,7 @@ TEST(board, should_not_be_able_to_shoot_when_obstructed) {
 
     b.my_worms[0] = game_worm(3, 4, 5);
 
-    b.opponent_worms[0] = game_worm(3, 2, 5);
+    b.opponent_worms[0] = game_worm(3, 1, 5);
 
     ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), NONE);
     
