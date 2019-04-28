@@ -181,7 +181,7 @@ struct board {
         if (abs(w.x - in_range_enemy.x) > 1 || w.y < in_range_enemy.y) return false;
         uint8_t distance = min(range, (uint8_t)abs(w.y - in_range_enemy.y));
         uint64_t row_mask = 1ULL << w.x;    
-        for (uint8_t i = 1; i < distance; i++) {
+        for (uint8_t i = 1; i <= distance; i++) {
             uint8_t y = w.y - i;
             if (dirt.rows[y] & row_mask) return false;
             if (friendly_worm_will_be_at_position(w.x, y)) return false;
@@ -193,7 +193,7 @@ struct board {
         if (abs(w.x - in_range_enemy.x) > 1 || w.y > in_range_enemy.y) return false;
         uint8_t distance = min(range, (uint8_t)abs(w.y - in_range_enemy.y));
         uint64_t row_mask = 1ULL << w.x;
-        for (uint8_t i = 1; i < distance; i++) {
+        for (uint8_t i = 1; i <= distance; i++) {
             uint8_t y = w.y + i;
             if (dirt.rows[y] & row_mask) return false;
             if (friendly_worm_will_be_at_position(w.x, y)) return false;
@@ -205,7 +205,7 @@ struct board {
         if (abs(w.y - in_range_enemy.y) > 1 || w.x < in_range_enemy.x) return false;
         uint8_t distance = min(range, (uint8_t)abs(w.x - in_range_enemy.x));
         uint64_t current_row = dirt.rows[w.y];
-        for (uint8_t i = 1; i < distance; i++) {
+        for (uint8_t i = 1; i <= distance; i++) {
             uint8_t x = w.x - i;
             if (current_row & (1ULL << x)) return false;
             if (friendly_worm_will_be_at_position(x, w.y)) return false;
@@ -217,7 +217,7 @@ struct board {
         if (abs(w.y - in_range_enemy.y) > 1 || w.x > in_range_enemy.x) return false;
         uint8_t distance = min(range, (uint8_t)abs(w.x - in_range_enemy.x));
         uint64_t current_row = dirt.rows[w.y];
-        for (uint8_t i = 1; i < distance; i++) {
+        for (uint8_t i = 1; i <= distance; i++) {
             uint8_t x = w.x + i;
             if (current_row & (1ULL << x)) return false;
             if (friendly_worm_will_be_at_position(x, w.y)) return false;
@@ -230,7 +230,7 @@ struct board {
             w.x > in_range_enemy.x) return false;
         distance = min((double)range, distance);
         double root_two = sqrt(2);
-        for (uint8_t i = 1; i * root_two < distance; i++) {
+        for (uint8_t i = 1; i * root_two <= distance; i++) {
             uint8_t x = w.x + i;
             uint8_t y = w.y - i;
             if (dirt.rows[y] & (1ULL << x)) return false;
@@ -244,7 +244,7 @@ struct board {
             w.x > in_range_enemy.x) return false;
         double root_two = sqrt(2);
         distance = min((double)range, distance);
-        for (uint8_t i = 1; i * root_two < distance; i++) {
+        for (uint8_t i = 1; i * root_two <= distance; i++) {
             uint8_t x = w.x + i;
             uint8_t y = w.y + i;
             if (dirt.rows[y] & (1ULL << x)) return false;
@@ -258,7 +258,7 @@ struct board {
             w.x < in_range_enemy.x) return false;
         double root_two = sqrt(2);
         distance = min((double)range, distance);
-        for (uint8_t i = 1; i * root_two < distance; i++) {
+        for (uint8_t i = 1; i * root_two <= distance; i++) {
             uint8_t x = w.x - i;
             uint8_t y = w.y - i;
             if (dirt.rows[y] & (1ULL << x)) return false;
@@ -272,7 +272,7 @@ struct board {
             w.x < in_range_enemy.x) return false;
         double root_two = sqrt(2);
         distance = min((double)range, distance);
-        for (uint8_t i = 1; i * root_two < distance; i++) {
+        for (uint8_t i = 1; i * root_two <= distance; i++) {
             uint8_t x = w.x - i;
             uint8_t y = w.y + i;
             if (dirt.rows[y] & (1ULL << x)) return false;
