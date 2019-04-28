@@ -184,8 +184,7 @@ struct board {
         for (game_worm* it = opponent_worms; it < opponent_worms + 3; it++) {
             game_worm w = *it;
             if (w.x == enemy_to_shoot.x && w.y == enemy_to_shoot.y) continue;
-            if (w.y == y && abs(w.x - x) == 1) return true;
-            else if (w.x == x && abs(w.y - y) == 1) return true;
+            if (abs(w.y - y) <= 1 && abs(w.x - x) <= 1) return true;
         }
         return false;
     }
