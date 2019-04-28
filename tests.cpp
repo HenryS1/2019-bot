@@ -348,6 +348,10 @@ TEST(board, should_include_enemies_that_can_move_into_range_in_shoot_candidates)
 
     b.my_worms[0] = game_worm(4, 4, 5);
 
+    b.opponent_worms[0] = game_worm(3, 1, 5);
+
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), N);
+
     b.opponent_worms[0] = game_worm(3, 2, 5);
 
     ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), N | NW);
