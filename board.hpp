@@ -176,6 +176,32 @@ struct board {
         }
         return false;
     }
+
+    bool dirt_might_get_dug_out(uint8_t x, uint8_t y) {
+        for (game_worm* it = my_worms; it < my_worms + 3; it++) {
+            if (dirt_cell_might_get_dug_out_by_my_worm(x, y, *it)) return true;
+        }
+        for (game_worm* it = opponent_worms; it < opponent_worms + 3; it++) {
+            game_worm w = *it;
+            if (w.y == y && abs(w.x - x) == 1) return true;
+            else if (w.x == x && abs(w.y - y) == 1) return true;
+        }
+        return false;
+    }
+
+    bool dirt_cell_might_get_dug_out_by_my_worm(uint8_t x, uint8_t y, game_worm w) {
+        if (w.action.a == DIG) {
+            if (w.y == y) {
+                return (w.x == x - 1 && w.action.del_x == 1) || 
+                    (w.x == x + 1 && w.action.del_x == -1);
+            }
+            if (w.x == x) {
+                return (w.y == y - 1 && w.action.del_y == 1) ||
+                    (w.y == y + 1 && w.action.del_y == -1);
+            }  
+        }
+        return false;
+    }
     
     bool might_shoot_north(game_worm w, game_worm in_range_enemy) {
         if (abs(w.x - in_range_enemy.x) > 1 || w.y < in_range_enemy.y) return false;
