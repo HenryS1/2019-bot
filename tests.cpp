@@ -159,7 +159,7 @@ TEST(board, when_all_squares_are_available_all_directions_are_move_candidates) {
 
     b.my_worms[0] = game_worm(1, 1, 5);
 
-    ASSERT_EQ((int)b.move_candidates(b.my_worms[0]), 255);
+    ASSERT_EQ((int)b.move_candidates(b.my_worms[0], b.my_worms), 255);
 }
 
 TEST(board, when_all_surrounding_squares_are_dirt_all_directions_are_dig_candidates) {
@@ -196,7 +196,7 @@ TEST(board, when_all_surrounding_squares_are_deep_space_no_directions_are_move_c
     board<9> b(dirt, air, deep_space, damage, range, digging_range);
 
     b.my_worms[0] = game_worm(2, 2, 5);
-    ASSERT_EQ((int)b.move_candidates(b.my_worms[0]), 0);
+    ASSERT_EQ((int)b.move_candidates(b.my_worms[0], b.my_worms), 0);
 }
 
 TEST(board, can_shoot_a_worm_in_any_direction) {
@@ -218,19 +218,19 @@ TEST(board, can_shoot_a_worm_in_any_direction) {
     b.opponent_worms[1] = game_worm(2, 6, 5);
     b.opponent_worms[2] = game_worm(4, 4, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), N | E | S);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), N | E | S);
 
     b.opponent_worms[0] = game_worm(0, 4, 5);
     b.opponent_worms[1] = game_worm(0, 2, 5);
     b.opponent_worms[2] = game_worm(0, 6, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), W | NW | SW);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), W | NW | SW);
 
     b.opponent_worms[0] = game_worm(4, 2, 5);
     b.opponent_worms[1] = game_worm(4, 6, 5);
     b.opponent_worms[2] = game_worm(0, 0, 0);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), NE | SE);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), NE | SE);
 }
 
 TEST(board, cant_shoot_a_worm_thats_out_of_range) {
@@ -251,35 +251,35 @@ TEST(board, cant_shoot_a_worm_thats_out_of_range) {
 
     b.opponent_worms[0] = game_worm(4, 1, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), NONE);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), NONE);
 
     b.opponent_worms[0] = game_worm(4, 7, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), NONE);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), NONE);
 
     b.opponent_worms[0] = game_worm(1, 4, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), NONE);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), NONE);
 
     b.opponent_worms[0] = game_worm(7, 4, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), NONE);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), NONE);
 
     b.opponent_worms[0] = game_worm(1, 1, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), NONE);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), NONE);
 
     b.opponent_worms[0] = game_worm(1, 7, 5);
     
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), NONE);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), NONE);
 
     b.opponent_worms[0] = game_worm(7, 7, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), NONE);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), NONE);
 
     b.opponent_worms[0] = game_worm(7, 1, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), NONE);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), NONE);
 }
 
 TEST(board, shoots_when_target_might_move_into_firing_line) {
@@ -300,35 +300,35 @@ TEST(board, shoots_when_target_might_move_into_firing_line) {
 
     b.opponent_worms[0] = game_worm(3, 2, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), N | NW);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), N | NW);
 
     b.opponent_worms[0] = game_worm(2, 3, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), W | NW);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), W | NW);
 
     b.opponent_worms[0] = game_worm(2, 5, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), W | SW);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), W | SW);
 
     b.opponent_worms[0] = game_worm(3, 6, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), SW | S);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), SW | S);
 
     b.opponent_worms[0] = game_worm(5, 6, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), S | SE);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), S | SE);
 
     b.opponent_worms[0] = game_worm(6, 5, 5);
     
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), SE | E);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), SE | E);
 
     b.opponent_worms[0] = game_worm(6, 3, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), E | NE);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), E | NE);
 
     b.opponent_worms[0] = game_worm(5, 2, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), NE | N);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), NE | N);
 
 }
 
@@ -350,39 +350,39 @@ TEST(board, should_include_enemies_that_can_move_into_range_in_shoot_candidates)
 
     b.opponent_worms[0] = game_worm(3, 1, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), N);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), N);
 
     b.opponent_worms[0] = game_worm(3, 2, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), N | NW);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), N | NW);
 
     b.opponent_worms[0] = game_worm(2, 3, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), W | NW);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), W | NW);
 
     b.opponent_worms[0] = game_worm(2, 5, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), W | SW);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), W | SW);
 
     b.opponent_worms[0] = game_worm(3, 6, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), SW | S);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), SW | S);
 
     b.opponent_worms[0] = game_worm(5, 6, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), S | SE);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), S | SE);
 
     b.opponent_worms[0] = game_worm(6, 5, 5);
     
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), SE | E);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), SE | E);
 
     b.opponent_worms[0] = game_worm(6, 3, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), E | NE);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), E | NE);
 
     b.opponent_worms[0] = game_worm(5, 2, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), NE | N);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), NE | N);
 }
 
 TEST(board, should_not_be_able_to_shoot_when_obstructed) {
@@ -403,7 +403,7 @@ TEST(board, should_not_be_able_to_shoot_when_obstructed) {
 
     b.opponent_worms[0] = game_worm(3, 1, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), NONE);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), NONE);
     
 }
 
@@ -425,7 +425,7 @@ TEST(board, should_not_be_able_to_shoot_when_a_worm_cant_move_into_firing_line) 
 
     b.opponent_worms[1] = game_worm(2, 3, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), W | NW);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), W | NW);
 
 }
 
@@ -449,11 +449,11 @@ TEST(board, should_be_able_to_shoot_if_dirt_might_get_dug_out_by_enemy) {
 
     b.opponent_worms[1] = game_worm(2, 3, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), N | NW | W);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), N | NW | W);
 
     b.opponent_worms[1] = game_worm(2, 2, 5);
 
-    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0]), N | NW);
+    ASSERT_EQ((int)b.shoot_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), N | NW);
 
 }
 
