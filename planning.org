@@ -51,70 +51,16 @@
 - Use a random number to select one of these for every worm.
 
 ** Simulation
-- For each worm:
-  - Randomly select a move
+- For each side:
+  - Select move actions
+  - Select dig actions
+  - Select shoot actions
   - Evaluate selected moves in specified order
   - Remove unconscious worms
-
-
-N mask
-
-0 1 1 1 0
-0 1 1 1 0
-0 0 0 0 0
-0 0 0 0 0
-0 0 0 0 0
-
-S mask
-
-0 0 0 0 0
-0 0 0 0 0
-0 0 0 0 0
-0 1 1 1 0
-0 1 1 1 0
-
-E mask
-
-0 0 0 0 0
-0 0 0 1 1
-0 0 0 1 1
-0 0 0 1 1
-0 0 0 0 0
-
-W mask
-
-0 0 0 0 0
-1 1 0 0 0 
-1 1 0 0 0
-1 1 0 0 0
-0 0 0 0 0
-
-NE mask
-
-0 0 0 1 1
-0 0 1 1 1
-0 0 0 1 0
-0 0 0 0 0
-0 0 0 0 0
-
-SE mask
-
-0 0 0 0 0
-0 0 0 0 0
-0 0 0 1 0
-0 0 1 1 1
-0 0 0 1 1
-
-O X X O X
-X D X X X
-X X W X X
-X X X X X
-X X X X X
 
 ** Search tree 
 - Branching factor is (at maximum) 65 * 6
 - Each node in MCTS tree needs 390 integers
 - May want to use Zobrist hashing to avoid loops
-
 
 
