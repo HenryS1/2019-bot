@@ -77,12 +77,11 @@ struct game_worm {
 
     game_worm() {}
 
-    game_worm(uint8_t x, uint8_t y, uint16_t health) : x(x), y(y), health(health) {} 
+    game_worm(uint8_t x, uint8_t y, uint16_t health) : p(x, y), health(health) {}
 
     bool is_alive() { return health > 0; }
 
-    uint8_t x;
-    uint8_t y;
+    position p;
     uint16_t health;
     selected_action action;
 
