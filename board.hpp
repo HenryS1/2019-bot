@@ -62,6 +62,17 @@ struct selected_action {
     action a = NOTHING;
 };
 
+struct position {
+
+    position() {}
+
+    position(uint8_t x, uint8_t y) : x(x), y(y) {}
+
+    uint8_t x;
+    uint8_t y;
+};
+
+
 struct game_worm {
 
     game_worm() {}
