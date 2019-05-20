@@ -57,8 +57,8 @@ enum action : uint8_t {
 };
 
 struct selected_action {
-    uint8_t del_x = 0;
-    uint8_t del_y = 0;
+    int8_t del_x = 0;
+    int8_t del_y = 0;
     action a = NOTHING;
 };
 
