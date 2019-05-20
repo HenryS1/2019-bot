@@ -178,7 +178,7 @@ TEST(board, when_all_surrounding_squares_are_dirt_all_directions_are_dig_candida
 
     b.my_worms[0] = game_worm(2, 2, 5);
 
-    ASSERT_EQ((int)b.dig_candidates(b.my_worms[0]), 255);
+    ASSERT_EQ((int)b.dig_candidates(b.my_worms[0], b.my_worms, b.opponent_worms), 255);
 
 }
 
