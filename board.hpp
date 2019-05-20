@@ -123,24 +123,96 @@ struct board {
 
     }
 
-    uint8_t dig_candidates(game_worm w) {
+    direction direction_between(position one, position other) {
+        if (one.x == other.x) {
+            if (one.y > other.y) {
+                return S;
+            } else if (one.y < other.y) {
+                return N;
+            }
+        } else if (one.y == other.y) {
+            if (one.x > other.x) {
+                return E;
+            } else if (one.x < other.x) {
+                return W;
+            }
+        } else if (one.y - other.y == one.x - other.x) {
+            if (one.x > other.x) {
+                return SE;
+            } else if (one.x < other.x) {
+                return NW;
+            }
+        } else if (one.y - other.y == other.x - one.x) {
+            if (one.x > other.x) {
+                return NE;
+            } else if (one.x < other.x) {
+                return SW;
+            }
+        }
+        return NONE;
+    }
+
+    bool enemy_between(position one, position other, game_worm* enemies) {
+        for (game_worm* it = enemies; it != enemies + 3; it++) {
+            game_worm enemy = *it;
+            if (!in_range(one, enemy.p, range)) continue;
+            if (direction_between(one, enemy.p) == direction_between(enemy.p, other)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool will_open_shoot_path_to_friendly(position p, game_worm* mine, game_worm* enemies) {
+        for (game_worm* it = mine; it != mine + 3; it++) {
+            game_worm one = *it;
+            if (one.action.a == SHOOT) {
+                for (game_worm* it_other = mine; it_other != mine + 3; it_other++) {
+                    game_worm other = *it_other;
+                    if (!in_range(one.p, other.p, range)) continue;
+                    if (direction_between(one.p, other.p) == NONE) continue;
+                    if (enemy_between(one.p, other.p, enemies)) continue;
+                    if (has_clear_path(one.p, p, mine) && has_clear_path(other.p, p, mine)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    uint8_t dig_candidates(game_worm w, game_worm* mine, game_worm* enemies) {
         uint8_t result = 0;
-        if (w.y > 0) {
-            uint64_t up_one_row = dirt.rows[w.y - 1];
-            result |= ((1ULL << w.x) & up_one_row) ? N : 0;
-            result |= w.x > 0 && ((1ULL << (w.x - 1)) & up_one_row) ? NW : 0;
-            result |= w.x < WIDTH && ((1ULL << (w.x + 1)) & up_one_row) ? NE : 0;
+        if (w.p.y > 0) {
+            uint64_t up_one_row = dirt.rows[w.p.y - 1];
+            result |= ((1ULL << w.p.x) & up_one_row) &&
+                !will_open_shoot_path_to_friendly(position(w.p.x, w.p.y - 1), mine, enemies)
+                ? N : 0;
+            result |= w.p.x > 0 && ((1ULL << (w.p.x - 1)) & up_one_row) &&
+                !will_open_shoot_path_to_friendly(position(w.p.x - 1, w.p.y - 1), mine, enemies)
+                ? NW : 0;
+            result |= w.p.x < WIDTH && ((1ULL << (w.p.x + 1)) & up_one_row) &&
+                !will_open_shoot_path_to_friendly(position(w.p.y - 1, w.p.x + 1), mine, enemies)
+                ? NE : 0;
         }
 
-        uint64_t row = dirt.rows[w.y];
-        result |= w.x > 0 && ((1ULL << (w.x - 1)) & row) ? W : 0;
-        result |= w.x < WIDTH && ((1ULL << (w.x + 1)) & row) ? E : 0;
+        uint64_t row = dirt.rows[w.p.y];
+        result |= w.p.x > 0 && ((1ULL << (w.p.x - 1)) & row) &&
+            !will_open_shoot_path_to_friendly(position(w.p.y, w.p.x - 1), mine, enemies) ? W : 0;
+        result |= w.p.x < WIDTH && ((1ULL << (w.p.x + 1)) & row) &&
+            !will_open_shoot_path_to_friendly(position(w.p.y, w.p.x + 1), mine, enemies) ? E : 0;
 
-        if (w.y < WIDTH) {
-            uint64_t down_one_row = dirt.rows[w.y + 1];
-            result |= ((1ULL << w.x) & down_one_row) ? S : 0;
-            result |= w.x > 0 && ((1ULL << (w.x - 1)) & down_one_row) ? SW : 0;
-            result |= w.x < WIDTH && ((1ULL << (w.x + 1)) & down_one_row) ? SE : 0;
+        if (w.p.y < WIDTH) {
+            uint64_t down_one_row = dirt.rows[w.p.y + 1];
+            result |= ((1ULL << w.p.x) & down_one_row) &&
+                !will_open_shoot_path_to_friendly(position(w.p.y + 1, w.p.x), mine, enemies)
+                ? S : 0;
+            result |= w.p.x > 0 && ((1ULL << (w.p.x - 1)) & down_one_row) &&
+                !will_open_shoot_path_to_friendly(position(w.p.y + 1, w.p.x - 1), mine, enemies)
+                ? SW : 0;
+            result |= w.p.x < WIDTH && ((1ULL << (w.p.x + 1)) & down_one_row) &&
+                !will_open_shoot_path_to_friendly(position(w.p.y + 1, w.p.x + 1), mine, enemies)
+                ? SE : 0;
         }
 
         return result;
