@@ -132,13 +132,13 @@ TEST(board, is_correctly_constructed_from_map) {
     ASSERT_EQ(deep_space.rows[1], 0);
 
     game_worm mw = b.my_worms[0];
-    ASSERT_EQ(mw.x, 0);
-    ASSERT_EQ(mw.y, 1);
+    ASSERT_EQ(mw.p.x, 0);
+    ASSERT_EQ(mw.p.y, 1);
     ASSERT_EQ(mw.health, 56);
 
     game_worm yw = b.opponent_worms[0];
-    ASSERT_EQ(yw.x, 1);
-    ASSERT_EQ(yw.y, 1);
+    ASSERT_EQ(yw.p.x, 1);
+    ASSERT_EQ(yw.p.y, 1);
     ASSERT_EQ(yw.health, 79);
 
 }
