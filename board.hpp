@@ -218,6 +218,10 @@ struct board {
         return result;
     }
 
+    bool between(uint8_t start, uint8_t between, uint8_t end) {
+        return start <= between && between <= end;
+    }
+
     double euclidean_distance(position one, position other) {
         if (one.x == other.x) return abs(one.y - other.y);
         if (one.y == other.y) return abs(one.x - other.x);
