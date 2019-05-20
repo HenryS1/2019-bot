@@ -316,9 +316,9 @@ struct board {
         for (auto it = mine; it < mine + 3; it++) {
             game_worm w = *it;
             if (!w.is_alive()) continue;
-            if (w.action.a == MOVE && w.x + w.action.del_x == x && w.y + w.action.del_y == y) 
+            if (w.action.a == MOVE && w.p.x + w.action.del_x == x && w.p.y + w.action.del_y == y)
                 return true;
-            else if (w.x == x && w.y == y) return true;
+            else if (w.p.x == x && w.p.y == y) return true;
         }
         return false;
     }
