@@ -330,87 +330,88 @@ struct board {
         }
         for (game_worm* it = opponents; it < opponents + 3; it++) {
             game_worm w = *it;
-            if (w.x == enemy_to_shoot.x && w.y == enemy_to_shoot.y) continue;
-            if (abs(w.y - y) <= 1 && abs(w.x - x) <= 1) return true;
+            if (w.p.x == enemy_to_shoot.p.x && w.p.y == enemy_to_shoot.p.y) continue;
+            if (abs(w.p.y - y) <= 1 && abs(w.p.x - x) <= 1) return true;
         }
         return false;
     }
 
     bool dirt_cell_might_get_dug_out_by_my_worm(uint8_t x, uint8_t y, game_worm w) {
-        return (w.action.a == DIG) && (w.x + w.action.del_x == x) && (w.y + w.action.del_y == y);
+        return (w.action.a == DIG) && (w.p.x + w.action.del_x == x)
+            && (w.p.y + w.action.del_y == y);
     }
-    
+
     bool might_shoot_north(game_worm w, game_worm in_range_enemy,
                            game_worm* mine, game_worm* opponents) {
-        if (abs(w.x - in_range_enemy.x) > 1 || w.y < in_range_enemy.y) return false;
-        uint8_t distance = min(range, (uint8_t)abs(w.y - in_range_enemy.y));
-        uint64_t row_mask = 1ULL << w.x;    
+        if (abs(w.p.x - in_range_enemy.p.x) > 1 || w.p.y < in_range_enemy.p.y) return false;
+        uint8_t distance = min(range, (uint8_t)abs(w.p.y - in_range_enemy.p.y));
+        uint64_t row_mask = 1ULL << w.p.x;
         for (uint8_t i = 1; i <= distance; i++) {
-            uint8_t y = w.y - i;
-            if ((dirt.rows[y] & row_mask) && 
-                !dirt_might_get_dug_out(w.x, y, in_range_enemy, mine, opponents)) 
+            uint8_t y = w.p.y - i;
+            if ((dirt.rows[y] & row_mask) &&
+                !dirt_might_get_dug_out(w.p.x, y, in_range_enemy, mine, opponents))
                 return false;
-            if (friendly_worm_will_be_at_position(w.x, y, mine)) return false;
+            if (friendly_worm_will_be_at_position(w.p.x, y, mine)) return false;
         }
         return true;
     }
 
-    bool might_shoot_south(game_worm w, game_worm in_range_enemy, 
+    bool might_shoot_south(game_worm w, game_worm in_range_enemy,
                            game_worm* mine, game_worm* opponents) {
-        if (abs(w.x - in_range_enemy.x) > 1 || w.y > in_range_enemy.y) return false;
-        uint8_t distance = min(range, (uint8_t)abs(w.y - in_range_enemy.y));
-        uint64_t row_mask = 1ULL << w.x;
+        if (abs(w.p.x - in_range_enemy.p.x) > 1 || w.p.y > in_range_enemy.p.y) return false;
+        uint8_t distance = min(range, (uint8_t)abs(w.p.y - in_range_enemy.p.y));
+        uint64_t row_mask = 1ULL << w.p.x;
         for (uint8_t i = 1; i <= distance; i++) {
-            uint8_t y = w.y + i;
+            uint8_t y = w.p.y + i;
             if ((dirt.rows[y] & row_mask) &&
-                !dirt_might_get_dug_out(w.x, y, in_range_enemy, mine, opponents)) 
+                !dirt_might_get_dug_out(w.p.x, y, in_range_enemy, mine, opponents))
                 return false;
-            if (friendly_worm_will_be_at_position(w.x, y, mine)) return false;
+            if (friendly_worm_will_be_at_position(w.p.x, y, mine)) return false;
         }
         return true;
     }
 
     bool might_shoot_west(game_worm w, game_worm in_range_enemy,
                           game_worm* mine, game_worm* opponents) {
-        if (abs(w.y - in_range_enemy.y) > 1 || w.x < in_range_enemy.x) return false;
-        uint8_t distance = min(range, (uint8_t)abs(w.x - in_range_enemy.x));
-        uint64_t current_row = dirt.rows[w.y];
+        if (abs(w.p.y - in_range_enemy.p.y) > 1 || w.p.x < in_range_enemy.p.x) return false;
+        uint8_t distance = min(range, (uint8_t)abs(w.p.x - in_range_enemy.p.x));
+        uint64_t current_row = dirt.rows[w.p.y];
         for (uint8_t i = 1; i <= distance; i++) {
-            uint8_t x = w.x - i;
+            uint8_t x = w.p.x - i;
             if ((current_row & (1ULL << x)) &&
-                !dirt_might_get_dug_out(x, w.y, in_range_enemy, mine, opponents)) 
+                !dirt_might_get_dug_out(x, w.p.y, in_range_enemy, mine, opponents))
                 return false;
-            if (friendly_worm_will_be_at_position(x, w.y, mine)) return false;
+            if (friendly_worm_will_be_at_position(x, w.p.y, mine)) return false;
         }
         return true;
     }
 
     bool might_shoot_east(game_worm w, game_worm in_range_enemy,
                           game_worm* mine, game_worm* opponents) {
-        if (abs(w.y - in_range_enemy.y) > 1 || w.x > in_range_enemy.x) return false;
-        uint8_t distance = min(range, (uint8_t)abs(w.x - in_range_enemy.x));
-        uint64_t current_row = dirt.rows[w.y];
+        if (abs(w.p.y - in_range_enemy.p.y) > 1 || w.p.x > in_range_enemy.p.x) return false;
+        uint8_t distance = min(range, (uint8_t)abs(w.p.x - in_range_enemy.p.x));
+        uint64_t current_row = dirt.rows[w.p.y];
         for (uint8_t i = 1; i <= distance; i++) {
-            uint8_t x = w.x + i;
+            uint8_t x = w.p.x + i;
             if ((current_row & (1ULL << x)) &&
-                !dirt_might_get_dug_out(x, w.y, in_range_enemy, mine, opponents)) 
+                !dirt_might_get_dug_out(x, w.p.y, in_range_enemy, mine, opponents))
                 return false;
-            if (friendly_worm_will_be_at_position(x, w.y, mine)) return false;
+            if (friendly_worm_will_be_at_position(x, w.p.y, mine)) return false;
         }
         return true;
     }
 
     bool might_shoot_ne(game_worm w, game_worm in_range_enemy,
                         double distance, game_worm* mine, game_worm* opponents) {
-        if (abs(w.x - in_range_enemy.x - (in_range_enemy.y - w.y)) > 1 ||
-            w.x > in_range_enemy.x) return false;
+        if (abs(w.p.x - in_range_enemy.p.x - (in_range_enemy.p.y - w.p.y)) > 1 ||
+            w.p.x > in_range_enemy.p.x) return false;
         distance = min((double)range, distance);
         double root_two = sqrt(2);
         for (uint8_t i = 1; i * root_two <= distance; i++) {
-            uint8_t x = w.x + i;
-            uint8_t y = w.y - i;
+            uint8_t x = w.p.x + i;
+            uint8_t y = w.p.y - i;
             if ((dirt.rows[y] & (1ULL << x)) &&
-                !dirt_might_get_dug_out(x, y, in_range_enemy, mine, opponents)) 
+                !dirt_might_get_dug_out(x, y, in_range_enemy, mine, opponents))
                 return false;
             if (friendly_worm_will_be_at_position(x, y, mine)) return false;
         }
@@ -419,15 +420,15 @@ struct board {
 
     bool might_shoot_se(game_worm w, game_worm in_range_enemy,
                         double distance, game_worm* mine, game_worm* opponents) {
-        if (abs(w.x - w.y - (in_range_enemy.x - in_range_enemy.y)) > 1 || 
-            w.x > in_range_enemy.x) return false;
+        if (abs(w.p.x - w.p.y - (in_range_enemy.p.x - in_range_enemy.p.y)) > 1 ||
+            w.p.x > in_range_enemy.p.x) return false;
         double root_two = sqrt(2);
         distance = min((double)range, distance);
         for (uint8_t i = 1; i * root_two <= distance; i++) {
-            uint8_t x = w.x + i;
-            uint8_t y = w.y + i;
-            if ((dirt.rows[y] & (1ULL << x)) && 
-                !dirt_might_get_dug_out(x, y, in_range_enemy, mine, opponents)) 
+            uint8_t x = w.p.x + i;
+            uint8_t y = w.p.y + i;
+            if ((dirt.rows[y] & (1ULL << x)) &&
+                !dirt_might_get_dug_out(x, y, in_range_enemy, mine, opponents))
                 return false;
             if (friendly_worm_will_be_at_position(x, y, mine)) return false;
         }
@@ -436,32 +437,32 @@ struct board {
 
     bool might_shoot_nw(game_worm w, game_worm in_range_enemy,
                         double distance, game_worm* mine, game_worm* opponents) {
-        if (abs(w.x - w.y - (in_range_enemy.x - in_range_enemy.y)) > 1 ||
-            w.x < in_range_enemy.x) return false;
+        if (abs(w.p.x - w.p.y - (in_range_enemy.p.x - in_range_enemy.p.y)) > 1 ||
+            w.p.x < in_range_enemy.p.x) return false;
         double root_two = sqrt(2);
         distance = min((double)range, distance);
         for (uint8_t i = 1; i * root_two <= distance; i++) {
-            uint8_t x = w.x - i;
-            uint8_t y = w.y - i;
-            if ((dirt.rows[y] & (1ULL << x)) && 
-                !dirt_might_get_dug_out(x, y, in_range_enemy, mine, opponents)) 
+            uint8_t x = w.p.x - i;
+            uint8_t y = w.p.y - i;
+            if ((dirt.rows[y] & (1ULL << x)) &&
+                !dirt_might_get_dug_out(x, y, in_range_enemy, mine, opponents))
                 return false;
             if (friendly_worm_will_be_at_position(x, y, mine)) return false;
         }
         return true;
     }
 
-    bool might_shoot_sw(game_worm w, game_worm in_range_enemy, 
+    bool might_shoot_sw(game_worm w, game_worm in_range_enemy,
                         double distance, game_worm* mine, game_worm* opponents) {
-        if (abs(w.x - in_range_enemy.x - (in_range_enemy.y - w.y)) > 1 ||
-            w.x < in_range_enemy.x) return false;
+        if (abs(w.p.x - in_range_enemy.p.x - (in_range_enemy.p.y - w.p.y)) > 1 ||
+            w.p.x < in_range_enemy.p.x) return false;
         double root_two = sqrt(2);
         distance = min((double)range, distance);
         for (uint8_t i = 1; i * root_two <= distance; i++) {
-            uint8_t x = w.x - i;
-            uint8_t y = w.y + i;
+            uint8_t x = w.p.x - i;
+            uint8_t y = w.p.y + i;
             if ((dirt.rows[y] & (1ULL << x)) &&
-                !dirt_might_get_dug_out(x, y, in_range_enemy, mine, opponents)) 
+                !dirt_might_get_dug_out(x, y, in_range_enemy, mine, opponents))
                 return false;
             if (friendly_worm_will_be_at_position(x, y, mine)) return false;
         }
@@ -472,12 +473,12 @@ struct board {
         uint8_t result = 0;
         for (auto it = opponents; it < opponents + 3; it++) {
             game_worm other = *it;
-            double distance = euclidean_distance(w, other);
+            double distance = euclidean_distance(w.p, other.p);
             if (other.is_alive() && distance <= range + sqrt(2)) {
                 if (might_shoot_north(w, other, mine, opponents)) {
                     result |= N;
                 }
-                if (might_shoot_ne(w, other, distance, mine, opponents)) { 
+                if (might_shoot_ne(w, other, distance, mine, opponents)) {
                     result |= NE;
                 }
                 if (might_shoot_east(w, other, mine, opponents)) {
