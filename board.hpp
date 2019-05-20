@@ -218,6 +218,13 @@ struct board {
         return result;
     }
 
+    double euclidean_distance(position one, position other) {
+        if (one.x == other.x) return abs(one.y - other.y);
+        if (one.y == other.y) return abs(one.x - other.x);
+        int16_t delx = one.x - other.x;
+        int16_t dely = one.y - other.y;
+        return sqrt(delx * delx + dely * dely);
+    }
     uint8_t move_candidates(game_worm w, game_worm* mine) {
         uint8_t result = 0;
         if (w.y > 0) {
@@ -407,14 +414,6 @@ struct board {
             if (friendly_worm_will_be_at_position(x, y, mine)) return false;
         }
         return true;
-    }
-
-    double euclidean_distance(game_worm one, game_worm other) {
-        if (one.x == other.x) return abs(one.y - other.y);
-        if (one.y == other.y) return abs(one.x - other.x);
-        int16_t delx = one.x - other.x;
-        int16_t dely = one.y - other.y;
-        return sqrt(delx * delx + dely * dely);
     }
 
     uint8_t shoot_candidates(game_worm w, game_worm* mine, game_worm* opponents) {
