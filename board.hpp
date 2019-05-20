@@ -229,6 +229,54 @@ struct board {
         int16_t dely = one.y - other.y;
         return sqrt(delx * delx + dely * dely);
     }
+
+    bool in_range(position one, position other, double range) {
+        return euclidean_distance(one, other) <= range + sqrt(2);
+    }
+
+    bool friendly_is_digging_cell(uint8_t x, uint8_t y, game_worm* mine) {
+        for (game_worm* it = mine; it != mine + 3; it++) {
+            game_worm w = *it;
+            if (w.action.a == DIG && w.p.x + w.action.del_x == x
+                && w.p.y + w.action.del_y == y) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool has_clear_path(position one, position other, game_worm* mine) {
+        for (uint8_t x = one.x, y = one.y; (x != other.x || y != other.y);
+             y = min<uint8_t>(y+1, other.y), x = min<uint8_t>(x + 1, other.x)) {
+            uint64_t row_mask = 1ULL << x;
+            if (dirt.rows[y] & row_mask && !friendly_is_digging_cell(x, y, mine)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    bool friendly_worm_will_shoot_at_position(game_worm* mine, position p) {
+        for (game_worm* it = mine; it != mine + 3; it++) {
+            game_worm w = *it;
+            if (w.action.a != SHOOT) continue;
+            if (direction_between(w.p, p) == NONE) continue;
+            if (!in_range(w.p, p, range)) continue;
+            if (!between(w.p.x, w.p.x + w.action.del_x, p.x) &&
+                !between(p.x, w.p.x + w.action.del_x, w.p.x)) continue;
+            if (!between(w.p.y, w.p.y + w.action.del_y, p.y) &&
+                !between(p.y, w.p.y + w.action.del_y, w.p.y)) continue;
+            position next_position = position(w.p.x + w.action.del_x, w.p.x + w.action.del_y);
+            return has_clear_path(next_position, p, mine);
+        }
+        return false;
+    }
+
+    bool safe_to_move_to(game_worm* mine, position p) {
+        return !friendly_worm_will_shoot_at_position(mine, p) &&
+            !friendly_worm_will_be_at_position(p.x, p.y, mine);
+    }
+
     uint8_t move_candidates(game_worm w, game_worm* mine) {
         uint8_t result = 0;
         if (w.y > 0) {
