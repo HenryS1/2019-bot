@@ -469,6 +469,15 @@ struct board {
         return true;
     }
 
+    void reset_actions() {
+        for (game_worm* it = my_worms; it != my_worms + 3; it++) {
+            it->action = {};
+        }
+        for (game_worm* it = opponent_worms; it != opponent_worms + 3; it++) {
+            it->action = {};
+        }
+    }
+
     uint8_t shoot_candidates(game_worm w, game_worm* mine, game_worm* opponents) {
         uint8_t result = 0;
         for (auto it = opponents; it < opponents + 3; it++) {
