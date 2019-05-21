@@ -29,6 +29,16 @@ struct simulation {
         }
     }
 
+    selected_action select_safe_shot(game_worm me, game_worm* mine) {
+        uint8_t options = 255;
+        for (game_worm* it = mine; it != mine + 3; it++) {
+            game_worm w = *it;
+            direction d = b.direction_between(w.p, me.p);
+            if (in_range(w.p, me.p, b.range) && d != NONE) options ^= (uint8_t) d;
+        }
+        return selected_action(select_direction(options), SHOOT);
+    }
+
     selected_action select_action(direction direction, action a) {
         switch (direction) {
         case NONE:
