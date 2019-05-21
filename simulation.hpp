@@ -33,10 +33,11 @@ struct simulation {
         uint8_t options = NE | NW | SE | SW;
         for (game_worm* it = mine; it != mine + 3; it++) {
             game_worm w = *it;
-            if (w.p.x >= me.p.x && w.p.y <= me.p.y) options ^= NE;
-            else if (w.p.x <= me.p.x && w.p.y <= me.p.y) options ^= NW;
-            else if (w.p.x >= me.p.x && w.p.y >= me.p.y) options ^= SE;
-            else if (w.p.x <= me.p.x && w.p.y >= me.p.y) options ^= SW;
+            position p = w.action.a == MOVE ? position(w.p.x + w.action.del_x, w.p.y + w.action.del_y) : w.p;
+            if (p.x > me.p.x && p.y < me.p.y) options ^= NE;
+            else if (p.x < me.p.x && p.y < me.p.y) options ^= NW;
+            else if (p.x > me.p.x && p.y > me.p.y) options ^= SE;
+            else if (p.x < me.p.x && p.y > me.p.y) options ^= SW;
         }
         return selected_action(select_direction(options), SHOOT);
     }
