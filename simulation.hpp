@@ -30,11 +30,13 @@ struct simulation {
     }
 
     selected_action select_safe_shot(game_worm me, game_worm* mine) {
-        uint8_t options = 255;
+        uint8_t options = NE | NW | SE | SW;
         for (game_worm* it = mine; it != mine + 3; it++) {
             game_worm w = *it;
-            direction d = b.direction_between(w.p, me.p);
-            if (in_range(w.p, me.p, b.range) && d != NONE) options ^= (uint8_t) d;
+            if (w.p.x >= me.p.x && w.p.y <= me.p.y) options ^= NE;
+            else if (w.p.x <= me.p.x && w.p.y <= me.p.y) options ^= NW;
+            else if (w.p.x >= me.p.x && w.p.y >= me.p.y) options ^= SE;
+            else if (w.p.x <= me.p.x && w.p.y >= me.p.y) options ^= SW;
         }
         return selected_action(select_direction(options), SHOOT);
     }
