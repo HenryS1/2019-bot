@@ -64,32 +64,66 @@ struct simulation {
     }
 
     selected_action select_action(game_worm w, game_worm* mine, game_worm* yours) {
-        uint64_t draw = mt() % 2;
-        if (draw == 0) {
-            uint8_t move_candidates = b.move_candidates(w, mine, yours);
-            if (move_candidates) {
+
+        uint8_t move_candidates = b.move_candidates(w, mine);
+        uint8_t dig_candidates = b.dig_candidates(w, mine, yours);
+        uint8_t shoot_candidates = b.shoot_candidates(w, mine, yours);
+        if (move_candidates && dig_candidates && shoot_candidates) {
+            uint8_t draw = mt() % 3;
+            if (draw == 0) {
                 direction d = select_direction(move_candidates);
                 return select_action(d, MOVE);
-            } else {
-                return {0, 0, NOTHING};
-            }
-        } else if (draw == 1) {
-            uint8_t dig_candidates = b.dig_candidates(w);
-            if (dig_candidates) {
+            } else if (draw == 1) {
                 direction d = select_direction(dig_candidates);
                 return select_action(d, DIG);
             } else {
-                return {0, 0, NOTHING};
-            }
-        } else {
-            uint8_t shoot_candidates = b.shoot_candidates(w, mine, yours);
-            if (shoot_candidates) {
                 direction d = select_direction(shoot_candidates);
                 return select_action(d, SHOOT);
-            } else {
-                return {0, 0, NOTHING};
             }
         }
+        if (move_candidates && dig_candidates) {
+            uint8_t draw = mt() % 2;
+            if (draw == 0) {
+                direction d = select_direction(move_candidates);
+                return select_action(d, MOVE);
+            } else {
+                direction d = select_direction(dig_candidates);
+                return select_action(d, DIG);
+            }
+        }
+        if (move_candidates && shoot_candidates) {
+            uint8_t draw = mt() % 2;
+            if (draw == 0) {
+                direction d = select_direction(move_candidates);
+                return select_action(d, MOVE);
+            } else {
+                direction d = select_direction(shoot_candidates);
+                return select_action(d, SHOOT);
+            }
+        }
+        if (dig_candidates && shoot_candidates) {
+            uint8_t draw = mt() % 2;
+            if (draw == 0) {
+                direction d = select_direction(dig_candidates);
+                return select_action(d, DIG);
+            } else {
+                direction d = select_direction(shoot_candidates);
+                return select_action(d, SHOOT);
+            }
+        }
+        if (move_candidates) {
+            direction d = select_direction(move_candidates);
+            return select_action(d, MOVE);
+        }
+        if (dig_candidates) {
+            direction d = select_direction(dig_candidates);
+            return select_action(d, DIG);
+        }
+        if (shoot_candidates) {
+            direction d = select_direction(shoot_candidates);
+            return select_action(d, SHOOT);
+        }
+        return b.select_safe_shot(w, mine, yours);
     }
 
     void step(board<WIDTH>& b) {
