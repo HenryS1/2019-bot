@@ -128,8 +128,38 @@ struct simulation {
         return b.select_safe_shot(w, mine, yours);
     }
 
-    void step(board<WIDTH>& b) {
+    void move(game_worm* wrm) {
+        game_worm w = *wrm;
+        assert(w.action.a == MOVE);
+        w.p.x += w.action.del_x;
+        w.p.y += w.action.del_y;
+        *wrm = w;
+    }
+
+    void dig(game_worm w) {
+        position dirt_position = position(w.p.x + w.action.del_x, w.p.y + w.action.del_y);
+        b.dirt.rows[dirt_position.y] ^= 1ULL << dirt_position.x;
+    }
+
+    void shoot(game_worm w) {
+        assert(w.action.a == SHOOT);
         
+    }
+
+    void apply_actions() {
+        for (game_worm* it = b.my_worms; it != b.my_worms + 3; it++) {
+            
+        }
+    }
+
+    void step(board<WIDTH>& b) {
+        for (game_worm* it = b.my_worms; it != b.my_worms + 3; it++) {
+            it->action = select_action(*it, b.my_worms, b.opponent_worms);
+        }
+        for (game_worm* it = b.opponent_worms; it != b.opponent_worms + 3; it++) {
+            it->action = select_action(*it, b.opponent_worms, b.my_worms);
+        }
+
     }
 
 };
