@@ -142,9 +142,25 @@ struct simulation {
         b.dirt.rows[dirt_position.y] ^= 1ULL << dirt_position.x;
     }
 
-    void shoot(game_worm w) {
+    bool shot_hits_friendly(position p, game_worm* mine) {
+        for (game_worm* it = mine; it != mine + 3; it++) {
+            game_worm w = *it;
+            if (p.x == w.p.x && p.y == w.p.y) return true;
+        }
+        return false;
+    }
+
+    bool shot_hits_enemy(position p, game_worm* enemies) {
+        for (game_worm* it = enemies; it != enemies + 3; it++) {
+            game_worm enemy = *it;
+            if (p.x == enemy.p.x && p.y == enemy.p.y) return true;
+        }
+        return false;
+    }
+
+    void shoot(game_worm w, game_worm* enemies) {
         assert(w.action.a == SHOOT);
-        
+        position p = w.p;
     }
 
     void apply_actions() {
