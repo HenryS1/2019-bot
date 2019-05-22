@@ -56,22 +56,24 @@ enum action : uint8_t {
     SHOOT = 4
 };
 
-struct selected_action {
-    int8_t del_x = 0;
-    int8_t del_y = 0;
-    action a = NOTHING;
-};
-
 struct position {
 
     position() {}
 
     position(uint8_t x, uint8_t y) : x(x), y(y) {}
 
+    position operator+(position other) { return position(x + other.x, y + other.y); }
+    bool operator==(position other) { return x == other.x && y == other.y; }
+
     uint8_t x;
     uint8_t y;
 };
 
+struct selected_action {
+
+    position p;
+    action a = NOTHING;
+};
 
 struct game_worm {
 
