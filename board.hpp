@@ -249,6 +249,7 @@ struct board {
         for (uint8_t x = one.x, y = one.y; (x != other.x || y != other.y);
              y = min<uint8_t>(y+1, other.y), x = min<uint8_t>(x + 1, other.x)) {
             uint64_t row_mask = 1ULL << x;
+            if (deep_space.rows[y] & row_mask) return false;
             if (dirt.rows[y] & row_mask && !friendly_is_digging_cell(x, y, mine)) {
                 return false;
             }
@@ -348,7 +349,7 @@ struct board {
         uint64_t row_mask = 1ULL << w.p.x;
         for (uint8_t i = 1; i <= distance; i++) {
             uint8_t y = w.p.y - i;
-            if ((dirt.rows[y] & row_mask) &&
+            if ((get_obstructions(y) & row_mask) &&
                 !dirt_might_get_dug_out(w.p.x, y, in_range_enemy, mine, opponents))
                 return false;
             if (friendly_worm_will_be_at_position(w.p.x, y, mine)) return false;
@@ -363,7 +364,7 @@ struct board {
         uint64_t row_mask = 1ULL << w.p.x;
         for (uint8_t i = 1; i <= distance; i++) {
             uint8_t y = w.p.y + i;
-            if ((dirt.rows[y] & row_mask) &&
+            if ((get_obstructions(y) & row_mask) &&
                 !dirt_might_get_dug_out(w.p.x, y, in_range_enemy, mine, opponents))
                 return false;
             if (friendly_worm_will_be_at_position(w.p.x, y, mine)) return false;
@@ -375,7 +376,7 @@ struct board {
                           game_worm* mine, game_worm* opponents) {
         if (abs(w.p.y - in_range_enemy.p.y) > 1 || w.p.x < in_range_enemy.p.x) return false;
         uint8_t distance = min(range, (uint8_t)abs(w.p.x - in_range_enemy.p.x));
-        uint64_t current_row = dirt.rows[w.p.y];
+        uint64_t current_row = get_obstructions(w.p.y);
         for (uint8_t i = 1; i <= distance; i++) {
             uint8_t x = w.p.x - i;
             if ((current_row & (1ULL << x)) &&
@@ -390,7 +391,7 @@ struct board {
                           game_worm* mine, game_worm* opponents) {
         if (abs(w.p.y - in_range_enemy.p.y) > 1 || w.p.x > in_range_enemy.p.x) return false;
         uint8_t distance = min(range, (uint8_t)abs(w.p.x - in_range_enemy.p.x));
-        uint64_t current_row = dirt.rows[w.p.y];
+        uint64_t current_row = get_obstructions(w.p.y);
         for (uint8_t i = 1; i <= distance; i++) {
             uint8_t x = w.p.x + i;
             if ((current_row & (1ULL << x)) &&
@@ -410,7 +411,7 @@ struct board {
         for (uint8_t i = 1; i * root_two <= distance; i++) {
             uint8_t x = w.p.x + i;
             uint8_t y = w.p.y - i;
-            if ((dirt.rows[y] & (1ULL << x)) &&
+            if ((get_obstructions(y) & (1ULL << x)) &&
                 !dirt_might_get_dug_out(x, y, in_range_enemy, mine, opponents))
                 return false;
             if (friendly_worm_will_be_at_position(x, y, mine)) return false;
@@ -427,7 +428,7 @@ struct board {
         for (uint8_t i = 1; i * root_two <= distance; i++) {
             uint8_t x = w.p.x + i;
             uint8_t y = w.p.y + i;
-            if ((dirt.rows[y] & (1ULL << x)) &&
+            if ((get_obstructions(y) & (1ULL << x)) &&
                 !dirt_might_get_dug_out(x, y, in_range_enemy, mine, opponents))
                 return false;
             if (friendly_worm_will_be_at_position(x, y, mine)) return false;
@@ -444,12 +445,16 @@ struct board {
         for (uint8_t i = 1; i * root_two <= distance; i++) {
             uint8_t x = w.p.x - i;
             uint8_t y = w.p.y - i;
-            if ((dirt.rows[y] & (1ULL << x)) &&
+            if ((get_obstructions(y) & (1ULL << x)) &&
                 !dirt_might_get_dug_out(x, y, in_range_enemy, mine, opponents))
                 return false;
             if (friendly_worm_will_be_at_position(x, y, mine)) return false;
         }
         return true;
+    }
+
+    uint64_t get_obstructions(uint8_t row) {
+        return dirt.rows[row] | deep_space.rows[row];
     }
 
     bool might_shoot_sw(game_worm w, game_worm in_range_enemy,
@@ -461,7 +466,7 @@ struct board {
         for (uint8_t i = 1; i * root_two <= distance; i++) {
             uint8_t x = w.p.x - i;
             uint8_t y = w.p.y + i;
-            if ((dirt.rows[y] & (1ULL << x)) &&
+            if ((get_obstructions(y) & (1ULL << x)) &&
                 !dirt_might_get_dug_out(x, y, in_range_enemy, mine, opponents))
                 return false;
             if (friendly_worm_will_be_at_position(x, y, mine)) return false;
