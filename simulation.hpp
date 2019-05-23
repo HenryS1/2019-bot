@@ -189,7 +189,14 @@ struct simulation {
             }
         }
     }
+
+    void apply_digs(game_worm* mine, game_worm* yours) {
+        for (game_worm* it = mine; it != mine + 3; it++) {
+            if (it->action.a == DIG) {
+                shoot(*it, mine, yours);
+            }
         }
+    }
 
     }
 
