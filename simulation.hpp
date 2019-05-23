@@ -182,12 +182,13 @@ struct simulation {
         }
     }
 
-    void step(board<WIDTH>& b) {
-        for (game_worm* it = b.my_worms; it != b.my_worms + 3; it++) {
-            it->action = select_action(*it, b.my_worms, b.opponent_worms);
+    void apply_shots(game_worm* mine, game_worm* yours) {
+        for (game_worm* it = mine; it != mine + 3; it++) {
+            if (it->action.a == SHOOT) {
+                shoot(*it, mine, yours);
+            }
         }
-        for (game_worm* it = b.opponent_worms; it != b.opponent_worms + 3; it++) {
-            it->action = select_action(*it, b.opponent_worms, b.my_worms);
+    }
         }
 
     }
