@@ -198,6 +198,11 @@ struct simulation {
         }
     }
 
+    void select_actions(game_worm* mine, game_worm* yours) {
+        for (game_worm* it = mine; it != mine + 3; it++) {
+            if (it->is_alive()) it->action = select_action(*it, mine, yours);
+        }
+    }
     }
 
 };
