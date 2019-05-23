@@ -132,8 +132,8 @@ struct simulation {
     void move(game_worm* wrm) {
         game_worm w = *wrm;
         assert(w.action.a == MOVE);
-        w.p.x += w.action.del_x;
-        w.p.y += w.action.del_y;
+        assert(!b.obstructed(w.p + w.action.p));
+        w.p += w.action.p;
         *wrm = w;
     }
 
