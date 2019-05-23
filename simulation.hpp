@@ -164,9 +164,14 @@ struct simulation {
         return false;
     }
 
-    void shoot(game_worm w, game_worm* enemies) {
+    void shoot(game_worm w, game_worm* mine, game_worm* enemies) {
         assert(w.action.a == SHOOT);
-        position p = w.p;
+        position p = w.p + w.action.p;
+        while (b.in_range(w.p, p)) {
+            if (b.obstructed(p)) return;
+            if (hit_enemy(p, enemies)) return;
+            if (hit_friendly(p, mine)) return;
+        }
     }
 
     void apply_actions() {
