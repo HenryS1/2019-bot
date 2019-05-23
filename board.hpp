@@ -314,6 +314,10 @@ struct board {
         return result;
     }
 
+    bool obstructed(position p) {
+        return get_obstructions(p.y) & 1ULL << p.x;
+    }
+
     bool friendly_worm_will_be_at_position(position p, game_worm* mine) {
         for (auto it = mine; it < mine + 3; it++) {
             game_worm w = *it;
