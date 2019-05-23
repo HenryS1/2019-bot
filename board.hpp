@@ -60,13 +60,13 @@ struct position {
 
     position() {}
 
-    position(uint8_t x, uint8_t y) : x(x), y(y) {}
+    position(int8_t x, int8_t y) : x(x), y(y) {}
 
     position operator+(position other) { return position(x + other.x, y + other.y); }
     bool operator==(position other) { return x == other.x && y == other.y; }
 
-    uint8_t x;
-    uint8_t y;
+    int8_t x;
+    int8_t y;
 };
 
 struct selected_action {
