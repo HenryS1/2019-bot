@@ -138,7 +138,7 @@ struct simulation {
     }
 
     void dig(game_worm w) {
-        position dirt_position = position(w.p.x + w.action.del_x, w.p.y + w.action.del_y);
+        position dirt_position = w.p + w.action.p;
         b.dirt.rows[dirt_position.y] ^= 1ULL << dirt_position.x;
     }
 
