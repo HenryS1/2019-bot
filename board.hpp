@@ -85,7 +85,7 @@ struct game_worm {
     bool is_alive() { return health > 0; }
 
     position p;
-    uint16_t health;
+    int16_t health;
     selected_action action;
 
 };
