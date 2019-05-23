@@ -46,23 +46,23 @@ struct simulation {
         switch (direction) {
         case NONE:
             assert(false);
-            return { 0, 0, a };
+            return { {0, 0}, a };
         case N:
-            return { 0, -1, a };
+            return { {0, -1}, a };
         case NE:
-            return { 1, -1, a };
+            return { {1, -1}, a };
         case E:
-            return { 1, 0, a };
+            return { {1, 0}, a };
         case SE:
-            return { 1, 1, a };
+            return { {1, 1}, a };
         case S:
-            return { 0, 1, a };
+            return { {0, 1}, a };
         case SW:
-            return { -1, 1, a };
+            return { {-1, 1}, a };
         case W:
-            return { -1, 0, a };
+            return { {-1, 0}, a };
         case NW:
-            return { -1, -1, a };
+            return { {-1, -1}, a };
         }
     }
 
