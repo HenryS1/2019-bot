@@ -203,6 +203,17 @@ struct simulation {
             if (it->is_alive()) it->action = select_action(*it, mine, yours);
         }
     }
+
+    void step(board<WIDTH>& b) {
+        select_actions(b.my_worms, b.opponent_worms);
+        select_actions(b.opponent_worms, b.my_worms);
+        apply_moves(b.my_worms);
+        apply_moves(b.opponent_worms);
+        apply_digs(b.my_worms, b.opponent_worms);
+        apply_digs(b.opponent_worms, b.my_worms);
+        apply_shots(b.my_worms, b.opponent_worms);
+        apply_shots(b.opponent_worms, b.my_worms);
+        b.reset_actions();
     }
 
 };
