@@ -158,7 +158,7 @@ struct board {
     bool enemy_between(position one, position other, game_worm* enemies) {
         for (game_worm* it = enemies; it != enemies + 3; it++) {
             game_worm enemy = *it;
-            if (!in_range(one, enemy.p, range)) continue;
+            if (!in_range(one, enemy.p)) continue;
             if (direction_between(one, enemy.p) == direction_between(enemy.p, other)) {
                 return true;
             }
@@ -172,7 +172,7 @@ struct board {
             if (one.action.a == SHOOT) {
                 for (game_worm* it_other = mine; it_other != mine + 3; it_other++) {
                     game_worm other = *it_other;
-                    if (!in_range(one.p, other.p, range)) continue;
+                    if (!in_range(one.p, other.p)) continue;
                     if (direction_between(one.p, other.p) == NONE) continue;
                     if (enemy_between(one.p, other.p, enemies)) continue;
                     if (has_clear_path(one.p, p, mine) && has_clear_path(other.p, p, mine)) {
@@ -233,7 +233,7 @@ struct board {
         return sqrt(delx * delx + dely * dely);
     }
 
-    bool in_range(position one, position other, double range) {
+    bool in_range(position one, position other) {
         return euclidean_distance(one, other) <= range + sqrt(2);
     }
 
@@ -264,7 +264,7 @@ struct board {
             game_worm w = *it;
             if (w.action.a != SHOOT) continue;
             if (direction_between(w.p, p) == NONE) continue;
-            if (!in_range(w.p, p, range)) continue;
+            if (!in_range(w.p, p)) continue;
             if (!between(w.p.x, w.p.x + w.action.p.x, p.x) &&
                 !between(p.x, w.p.x + w.action.p.x, w.p.x)) continue;
             if (!between(w.p.y, w.p.y + w.action.p.y, p.y) &&
