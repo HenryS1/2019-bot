@@ -174,9 +174,11 @@ struct simulation {
         }
     }
 
-    void apply_actions() {
-        for (game_worm* it = b.my_worms; it != b.my_worms + 3; it++) {
-            
+    void apply_moves(game_worm* mine) {
+        for (game_worm* it = mine; it != mine + 3; it++) {
+            if (it->action.a == MOVE) {
+                move(it);
+            }
         }
     }
 
