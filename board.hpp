@@ -64,6 +64,7 @@ struct position {
 
     position operator+(position other) { return position(x + other.x, y + other.y); }
     bool operator==(position other) { return x == other.x && y == other.y; }
+    void operator+=(position other) { x += other.x; y += other.y; }
 
     int8_t x;
     int8_t y;
