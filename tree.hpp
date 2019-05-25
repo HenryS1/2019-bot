@@ -10,7 +10,7 @@ using namespace std;
 struct node {
 
     node(int16_t size, bot_allocator& a) 
-        : f(size, a), children(reinterpret_cast<uint32_t*>(a.provide_bytes(size))) { }
+        : f(size, a), children(reinterpret_cast<uint32_t*>(a.provide_bytes(size * 4))) { }
 
     fenwick f;
     uint32_t* children;
