@@ -10,6 +10,12 @@ struct moves {
     selected_action actions[3];
 };
 
+enum result_score : uint8_t {
+    YOU_WIN = 0,
+    DRAW = 1,
+    I_WIN = 2
+};
+
 template<uint8_t WIDTH>
 struct simulation {
 
