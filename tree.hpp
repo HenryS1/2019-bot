@@ -7,7 +7,6 @@
 
 using namespace std;
 
-template <uint8_t WIDTH>
 struct node {
 
     node(int16_t size, bot_allocator& a) 
