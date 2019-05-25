@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "read_data.hpp"
 #include "board.hpp"
+#include "simulation.hpp"
 
 using namespace std;
 
