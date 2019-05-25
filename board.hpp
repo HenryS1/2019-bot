@@ -488,7 +488,7 @@ struct board {
         for (auto it = opponents; it < opponents + 3; it++) {
             game_worm other = *it;
             double distance = euclidean_distance(w.p, other.p);
-            if (other.is_alive() && distance <= range + sqrt(2)) {
+            if (other.is_alive() && in_range(w.p, other.p)) {
                 if (might_shoot_north(w, other, mine, opponents)) {
                     result |= N;
                 }
