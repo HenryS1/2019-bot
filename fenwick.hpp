@@ -52,7 +52,7 @@ struct fenwick {
         }
     }
 
-    uint16_t binary_search(uint32_t target) {
+    uint16_t find_index(uint32_t target) {
         uint16_t index = size / 2, bottom = 0, top = size;
         uint32_t f = cumulative_frequency(index);
         while (top - bottom > 1) {
