@@ -44,6 +44,7 @@ struct fenwick {
     }
 
     void update(uint16_t index, uint32_t value) {
+        total += value;
         index++;
         while (size >= index) {
             freq[size] += value;
