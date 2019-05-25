@@ -22,5 +22,20 @@ struct node {
 
 };
 
+template <uint8_t WIDTH>
+struct tree {
+    
+
+
+    explicit tree(bot_allocator* a) : a(a) {}
+
+    bot_allocator* a;
+    board<WIDTH> current_state;
+
+    void simulate_round() {
+
+    }
+
+};
 
 #endif
