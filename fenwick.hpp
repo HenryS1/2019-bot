@@ -13,16 +13,19 @@ uint32_t ls_one(uint32_t i) { return i & (-1); }
 struct fenwick {
 
     fenwick(uint16_t s, bot_allocator& a) {
-        uint32_t* f = reinterpret_cast<uint32_t*>(a.provide_bytes(s + 1));
+        uint32_t* f = reinterpret_cast<uint32_t*>(a.provide_bytes((s + 1) * 4));
         if (f) {
+            total = 0;
             size = s;
             freq = f;
         } else {
+            total = 0;
             size = 0;
             freq = nullptr;
         }
     }
 
+    uint32_t total;
     uint16_t size;
     uint32_t* freq;
 
