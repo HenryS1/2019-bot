@@ -224,6 +224,29 @@ struct simulation {
         b.reset_actions();
     }
 
+    bool is_dead(game_worm* player) {
+        bool dead = true;
+        for (game_worm* it = player; it != player + 3; it++) {
+            dead &= !it->is_alive();
+        }
+        return dead;
+    }
+
+    bool game_has_finished() {
+        return is_dead(b.my_worms) || is_dead(b.opponent_worms);
+    }
+
+    void rollout() {
+        while (!game_has_finished()) step();
+    }
+
+    result_score determine_score() {
+        if (is_dead(b.my_worms())) return YOU_WIN;
+        if (is_dead(b.opponent_worms())) return I_WIN;
+        assert(false);
+        return DRAW;
+    }
+
 };
 
 #endif
