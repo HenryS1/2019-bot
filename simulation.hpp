@@ -204,7 +204,7 @@ struct simulation {
         }
     }
 
-    void step(board<WIDTH>& b) {
+    void step() {
         select_actions(b.my_worms, b.opponent_worms);
         select_actions(b.opponent_worms, b.my_worms);
         apply_moves(b.my_worms);
