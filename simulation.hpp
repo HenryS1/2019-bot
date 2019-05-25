@@ -16,6 +16,8 @@ struct simulation {
     board<WIDTH> b;
     mt19937 mt;
 
+    explicit simulation(board<WIDTH> b) : b(b) {}
+
     direction select_direction(uint8_t available) {
         uint8_t set_bits = __builtin_popcount(available);
         uint8_t selected_bit = mt() % set_bits;
